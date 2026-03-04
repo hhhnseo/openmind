@@ -6,16 +6,7 @@ labels: "🚀 Feat"
 assignees: ""
 ---
 
-# #️⃣ Branch name :
-
-## 📌 Description
-
--
--
--
--
-
-## :memo: Todo
+## 📝 Todo - 작업한 내용
 
 - [ ]
 - [ ]
