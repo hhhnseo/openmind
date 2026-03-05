@@ -71,3 +71,31 @@ const Button = styled.button`
 `;
 
 export default Button;
+
+// 버튼 적용법
+{
+  /* <Button type="primary" $arrow disabled>
+        질문 받기
+      </Button>
+      <Button type="primary" $arrow>
+        질문 받기
+      </Button>
+      <Button type="outline" $arrow disabled>
+        답변하러 가기
+      </Button>
+      <Button type="outline" $arrow>
+        답변하러 가기
+      </Button>
+      <Button type="primary" $arrow $small>
+        질문 받기
+      </Button>
+      <Button type="outline" $arrow $small>
+        답변하러 가기
+      </Button>
+      <Button type="primary" $arrow $small disabled>
+        질문 받기
+      </Button>
+      <Button type="outline" $arrow $small >
+        답변하러 가기
+      </Button> */
+}
