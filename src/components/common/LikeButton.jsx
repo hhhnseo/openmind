@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import ThumbUp from "../assets/icons/icon-thumbs-up.svg?react";
-import ThumbDown from "../assets/icons/icon-thumbs-down.svg?react";
+import ThumbUp from "../../assets/icons/icon-thumbs-up.svg?react";
+import ThumbDown from "../../assets/icons/icon-thumbs-down.svg?react";
 import { useState } from "react";
 
 const Wrapper = styled.div`
