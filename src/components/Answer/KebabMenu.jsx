@@ -5,18 +5,18 @@ import EditIcon from "../../assets/icons/icon-edit.svg?react";
 import DeleteIcon from "../../assets/icons/icon-close.svg?react";
 import RejectIcon from "../../assets/icons/icon-rejection.svg?react";
 
-export const KebabWrapper = styled.div`
+const KebabWrapper = styled.div`
   position: relative;
   display: inline-block;
 `;
 
-export const KebabButton = styled.button`
+const KebabButton = styled.button`
   border: none;
   background: none;
   font-size: 20px;
 `;
 
-export const Dropdown = styled.div`
+const Dropdown = styled.div`
   position: absolute;
   top: 28px;
   left: 0;
@@ -30,7 +30,7 @@ export const Dropdown = styled.div`
   box-shadow: var(--shadow-1pt);
 `;
 
-export const MenuItem = styled.button`
+const MenuItem = styled.button`
   display: flex;
   flex: 1 0 0;
   justify-content: center;
@@ -59,7 +59,7 @@ export const MenuItem = styled.button`
   }
 `;
 
-export const Icon = styled.span`
+const Icon = styled.span`
   display: flex;
   align-items: center;
   svg path {

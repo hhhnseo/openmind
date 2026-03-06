@@ -3,12 +3,12 @@ import ThumbUp from "../assets/icons/icon-thumbs-up.svg?react";
 import ThumbDown from "../assets/icons/icon-thumbs-down.svg?react";
 import { useState } from "react";
 
-export const Wrapper = styled.div`
+const Wrapper = styled.div`
   display: flex;
   gap: 11px;
 `;
 
-export const Button = styled.button`
+const Button = styled.button`
   display: flex;
   align-items: center;
   gap: 6px;
@@ -65,7 +65,7 @@ const DislikeButton = styled(Button)`
   }
 `;
 
-export const Icon = styled.span`
+const Icon = styled.span`
   display: flex;
 
   svg path {
@@ -78,12 +78,12 @@ export const Icon = styled.span`
   }
 `;
 
-export const Label = styled.span`
+const Label = styled.span`
   font-size: 14px;
   font-weight: 500;
 `;
 
-export const Count = styled.span`
+const Count = styled.span`
   font-size: 14px;
   font-weight: 500;
   color: var(--grayScale-40);
