@@ -1,5 +1,5 @@
 // Button.jsx (Styled Components 사용 예시)
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import ArrowIcon from '../assets/icons/icon-arrow-right.svg';
 
 const StyledButton = styled.button`
@@ -35,7 +35,7 @@ const StyledButton = styled.button`
   // 1. 크기 (Size) 설정
   ${({ size }) =>
     size === 'small' &&
-    css`
+    `
       padding: 0px 12px;
       font-size: 14px;
       height: 34px;
@@ -44,7 +44,7 @@ const StyledButton = styled.button`
   // 2. 종류 (Variant) 설정
   ${({ variant }) =>
     variant === 'outline' &&
-    css`
+    `
       background-color: var(--brown-10);
       color: var(--brown-40);
       &:hover {
@@ -64,14 +64,9 @@ const StyledButton = styled.button`
     `}
 `;
 
-export default function Button({
-  variant = 'primary',
-  size = 'medium',
-  children,
-  ...props
-}) {
+export default function Button({ variant, size, children, ...props }) {
   return (
-    <StyledButton variant={variant} size={size} {...props}>
+    <StyledButton $variant={variant} size={size} {...props}>
       {children}
       <img src={ArrowIcon} />
     </StyledButton>
