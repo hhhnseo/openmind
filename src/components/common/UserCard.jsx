@@ -1,8 +1,8 @@
 // /src/components/UserCard.jsx
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import MessagesIcon from '../assets/icons/icon-messages.svg?react';
-import profileImage from '../assets/images/image-profile.svg';
+import MessagesIcon from '../../assets/icons/icon-messages.svg?react';
+import profileImage from '../../assets/images/image-profile.svg';
 
 const SIZE = {
   large: css`

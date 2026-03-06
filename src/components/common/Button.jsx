@@ -1,6 +1,6 @@
 // Button.jsx (Styled Components 사용 예시)
 import styled from 'styled-components';
-import ArrowIcon from '../assets/icons/icon-arrow-right.svg';
+import ArrowIcon from '../../assets/icons/icon-arrow-right.svg';
 
 const StyledButton = styled.button`
   display: inline-flex;
