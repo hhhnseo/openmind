@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import logo from '../assets/images/image-logo.svg?react';
+import logo from '../../assets/images/image-logo.svg?react';
 
 const SIZE = {
   large: css`

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import personIcon from '../assets/icons/icon-person.svg?react';
+import personIcon from '../../assets/icons/icon-person.svg?react';
 
 const Container = styled.div`
   display: flex;
