@@ -3,7 +3,11 @@ import MsgIcon from "../../assets/icons/icon-messages.svg?react";
 import EmptyIcon from "../../assets/images/image-empty.svg?react";
 import TestCard from "./TestCard";
 
-export default function CardFrame({ questions = [], showMenu = true }) {
+export default function CardFrame({
+  questions = [],
+  showMenu = true,
+  showAnswerForm = false
+}) {
   const count = questions?.length ?? 0;
   const isEmpty = !questions || questions.length === 0;
 
@@ -31,6 +35,7 @@ export default function CardFrame({ questions = [], showMenu = true }) {
               key={q.id}
               data={q}
               showMenu={showMenu}
+              showAnswerForm={showAnswerForm}
             />
           ))}
         </CardList>

@@ -4,8 +4,13 @@ import LikeButton from "./LikeButton";
 import Badge from "./Badge";
 import KebabMenu from "../Answer/KebabMenu";
 import { useState } from "react";
+import AnswerForm from "../answer/AnswerForm";
 
-export default function TestCard({ data, showMenu = true }) {
+export default function TestCard({
+  data,
+  showMenu = true,
+  showAnswerForm = false
+}) {
 
   const [rejected, setRejected] = useState(false);
   const isAnswerd = data.answers?.length > 0;
@@ -39,8 +44,12 @@ export default function TestCard({ data, showMenu = true }) {
           </UserInfo>
           {rejected ? (
             <RejectedText>답변 거절</RejectedText>
+          ) : isAnswerd ? (
+            data.answers[0].content
+          ) : showAnswerForm ? (
+            <AnswerForm />
           ) : (
-            data.answers || "내용"
+            "아직 답변이 없습니다"
           )}
         </Content>
       </Form>

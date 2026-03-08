@@ -22,7 +22,11 @@ function App() {
 
   return (
     <div>
-      <CardFrame questions={questions} showMenu={false} />
+      <CardFrame
+        questions={questions}
+        showMenu={true}
+        showAnswerForm={true}
+      />
     </div>
   )
 }
