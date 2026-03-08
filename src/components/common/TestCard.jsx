@@ -5,7 +5,7 @@ import Badge from "./Badge";
 import KebabMenu from "../Answer/KebabMenu";
 import { useState } from "react";
 
-export default function TestCard({ data }) {
+export default function TestCard({ data, showMenu = true }) {
 
   const [rejected, setRejected] = useState(false);
   const isAnswerd = data.answers?.length > 0;
@@ -20,7 +20,9 @@ export default function TestCard({ data }) {
       
       <Header>
         <Badge $answerd={badgeActive} />
-        <KebabMenu onReject={handleReject} />
+        {showMenu && (
+          <KebabMenu onReject={handleReject} />
+        )}
       </Header>
 
       <Question>
