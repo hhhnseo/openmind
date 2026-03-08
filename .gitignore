@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Vite 캐시 무시
+.vite/
+node_modules/
+dist/
