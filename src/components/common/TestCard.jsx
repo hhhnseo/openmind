@@ -100,7 +100,7 @@ const Date = styled.span`
   color: var(--grayScale-40, #818181);
   font-size: 14px;
   font-weight: 500;
-  line-height: 18px;
+  line-height: 24px;
 `;
 
 const Question = styled.div`
