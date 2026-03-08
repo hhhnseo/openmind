@@ -88,7 +88,7 @@ const MenuItem = styled.button`
   background: var(--grayScale-10, #fff);
 
   font-size: 14px;
-  font-weight: 500px;
+  font-weight: 500;
   line-height: 18px;
   color: var(--grayScale-50, #515151);
 

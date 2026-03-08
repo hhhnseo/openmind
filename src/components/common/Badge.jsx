@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Badge = styled.div`
+const Badge = styled.div`
   display: inline-flex;
   padding: 4px 12px;
   justify-content: center;
