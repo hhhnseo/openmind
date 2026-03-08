@@ -2,34 +2,6 @@ import { useState } from "react"
 import styled from "styled-components";
 import InputTextArea from "../common/InputTextArea";
 
-const FormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 532px;
-  gap: 8px;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 22px;
-`;
-
-const SubmitButton = styled.button`
-  display: flex;
-  width: 100%;
-  height: 46px;
-  padding: 12px 24px;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  align-self: stretch;
-  border-radius: 8px;
-  background: ${({ disabled }) =>
-    disabled ? "var(--brown-30)" : "var(--brown-40)"};
-  color: var(--grayScale-10);
-  cursor: ${({ disabled }) =>
-    disabled ? "default" : "pointer"};
-`;
-
 const AnswerForm = ({ onSubmit }) => {
   const [value, setValue] = useState("");
 
@@ -65,5 +37,33 @@ const AnswerForm = ({ onSubmit }) => {
     </FormContainer>
   )
 }
+
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 532px;
+  gap: 8px;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+`;
+
+const SubmitButton = styled.button`
+  display: flex;
+  width: 100%;
+  height: 46px;
+  padding: 12px 24px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  align-self: stretch;
+  border-radius: 8px;
+  background: ${({ disabled }) =>
+    disabled ? "var(--brown-30)" : "var(--brown-40)"};
+  color: var(--grayScale-10);
+  cursor: ${({ disabled }) =>
+    disabled ? "default" : "pointer"};
+`;
 
 export default AnswerForm;

@@ -5,6 +5,51 @@ import EditIcon from "../../assets/icons/icon-edit.svg?react";
 import DeleteIcon from "../../assets/icons/icon-close.svg?react";
 import RejectIcon from "../../assets/icons/icon-rejection.svg?react";
 
+export default function KebabMenu({
+  onEdit,
+  onDelete,
+  onReject
+}) {
+  const [open, setOpen] = useState(false);
+
+  const handleEdit = onEdit || (() => console.log("수정하기"));
+  const handleDelete = onDelete || (() => console.log("삭제하기"));
+  const handleReject = onReject || (() => console.log("답변거절"));
+
+  return (
+    <KebabWrapper>
+      <KebabButton onClick={() => setOpen((prev) => !prev)}>
+        <KebabIcon />
+      </KebabButton>
+
+      {open && (
+        <Dropdown>
+          <MenuItem onClick={handleEdit}>
+            <Icon>
+              <EditIcon />
+            </Icon>
+            수정하기
+          </MenuItem>
+
+          <MenuItem onClick={handleDelete}>
+            <Icon>
+              <DeleteIcon />
+            </Icon>
+            삭제하기
+          </MenuItem>
+
+          <MenuItem onClick={handleReject}>
+            <Icon>
+              <RejectIcon />
+            </Icon>
+            답변거절
+          </MenuItem>
+        </Dropdown>
+      )}
+    </KebabWrapper>
+  );
+}
+
 const KebabWrapper = styled.div`
   position: relative;
   display: inline-block;
@@ -71,48 +116,3 @@ const Icon = styled.span`
     height: 14px;
   }
 `;
-
-export default function KebabMenu({
-  onEdit,
-  onDelete,
-  onReject
-}) {
-  const [open, setOpen] = useState(false);
-
-  const handleEdit = onEdit || (() => console.log("수정하기"));
-  const handleDelete = onDelete || (() => console.log("삭제하기"));
-  const handleReject = onReject || (() => console.log("답변거절"));
-
-  return (
-    <KebabWrapper>
-      <KebabButton onClick={() => setOpen((prev) => !prev)}>
-        <KebabIcon />
-      </KebabButton>
-
-      {open && (
-        <Dropdown>
-          <MenuItem onClick={handleEdit}>
-            <Icon>
-              <EditIcon />
-            </Icon>
-            수정하기
-          </MenuItem>
-
-          <MenuItem onClick={handleDelete}>
-            <Icon>
-              <DeleteIcon />
-            </Icon>
-            삭제하기
-          </MenuItem>
-
-          <MenuItem onClick={handleReject}>
-            <Icon>
-              <RejectIcon />
-            </Icon>
-            답변거절
-          </MenuItem>
-        </Dropdown>
-      )}
-    </KebabWrapper>
-  );
-}
