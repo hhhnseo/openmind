@@ -6,13 +6,14 @@ const StyledButton = styled.button`
   display: inline-flex;
   align-items: center;
   font-family: 'pretendard';
-  background: var(--brown-40) url(ArrowIcon);
+  background-color: var(--brown-40);
   color: white;
   height: 46px;
   font-size: 16px;
   padding: 0px 24px;
   border: none;
   border-radius: 8px;
+  transition: 0.1s;
   &:hover {
     background: var(--brown-40);
     box-shadow: 0 0 0 2px var(--brown-50) inset;
@@ -32,9 +33,13 @@ const StyledButton = styled.button`
     width: 18px;
     margin-left: 8px;
   }
+  &:hover img {
+    transform: translateX(5px);
+    transition: transform 0.5s ease-in-out;
+  }
   // 크기 (Size) 설정
-  ${({ size }) =>
-    size === 'small' &&
+  ${({ $size }) =>
+    $size === 'small' &&
     `
       padding: 0px 12px;
       font-size: 14px;
@@ -42,8 +47,8 @@ const StyledButton = styled.button`
     `}
 
   // 종류 (Variant) 설정
-  ${({ variant }) =>
-    variant === 'outline' &&
+  ${({ $variant }) =>
+    $variant === 'outline' &&
     `
       border:1px solid var(--brown-40);
       background-color: var(--brown-10);
@@ -67,7 +72,7 @@ const StyledButton = styled.button`
 
 export default function Button({ variant, size, children, ...props }) {
   return (
-    <StyledButton variant={variant} size={size} {...props}>
+    <StyledButton $variant={variant} $size={size} {...props}>
       {children}
       <img src={ArrowIcon} />
     </StyledButton>
@@ -75,26 +80,26 @@ export default function Button({ variant, size, children, ...props }) {
 }
 
 /* 사용 예시
-  <Button variant="primary">기본 버튼</Button>
-  <Button variant="outline">작은 버튼</Button>
-  <Button variant="primary" size="small">
+  <Button $variant="primary">기본 버튼</Button>
+  <Button $variant="outline">작은 버튼</Button>
+  <Button $variant="primary" $size="small">
     기본 버튼
   </Button>
-  <Button variant="outline" size="small">
+  <Button $variant="outline" $size="small">
     작은 버튼
   </Button>
 
   // Inactivate 상태
-  <Button variant="primary" disabled>
+  <Button $variant="primary" disabled>
     기본 버튼
   </Button>
-  <Button variant="outline" disabled>
+  <Button $variant="outline" disabled>
     작은 버튼
   </Button>
-  <Button variant="primary" size="small" disabled>
+  <Button $variant="primary" $size="small" disabled>
     기본 버튼
   </Button>
-  <Button variant="outline" size="small" disabled>
+  <Button $variant="outline" $size="small" disabled>
     작은 버튼
   </Button>
 */
