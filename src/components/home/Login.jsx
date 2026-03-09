@@ -24,6 +24,16 @@ const Login = ({ placeholder }) => {
     try {
       const response = await postSubjects({ name, team: '1' });
       const { id } = response;
+      const TEN_MINUTES = 10 * 60 * 1000; //10분
+      const expiryTime = new Date().getTime() + TEN_MINUTES;
+
+      const storageData = {
+        id: id,
+        expiry: expiryTime,
+      };
+
+      localStorage.setItem('subjectId', JSON.stringify(storageData));
+
       navigate(`/post/${id}/answer`);
     } catch {
       alert('등록에 실패했습니다. 다시 시도해주세요.');

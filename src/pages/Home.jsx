@@ -4,9 +4,30 @@ import MainImg from '../assets/images/image-main.svg';
 import Login from '../components/home/Login';
 import Logo from '../components/common/Logo';
 import Button from '../components/common/Button';
+import { useEffect } from 'react';
 
 const Home = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storageData = localStorage.getItem('subjectId');
+
+    if (!storageData) return;
+
+    try {
+      const { id, expiry } = JSON.parse(storageData);
+      const now = new Date().getTime();
+
+      if (now > expiry) {
+        localStorage.removeItem('subjectId');
+      } else {
+        navigate(`/post/${id}/answer`);
+      }
+    } catch (error) {
+      console.error('Storage data error:', error);
+      localStorage.removeItem('subjectId');
+    }
+  }, [navigate]);
 
   const goToList = () => {
     navigate('/list');
