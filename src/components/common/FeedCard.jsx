@@ -2,9 +2,9 @@ import styled from "styled-components";
 import ProfileImg from "../../assets/images/image-profile.svg";
 import LikeButton from "./LikeButton";
 import Badge from "./Badge";
-import KebabMenu from "../Answer/KebabMenu";
 import { useState } from "react";
 import AnswerForm from "../answer/AnswerForm";
+import KebabMenu from "../answer/KebabMenu";
 
 export default function FeedCard({
   data,
