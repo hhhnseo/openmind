@@ -6,19 +6,40 @@ import KebabMenu from "../Answer/KebabMenu";
 import { useState } from "react";
 import AnswerForm from "../answer/AnswerForm";
 
-export default function TestCard({
+export default function FeedCard({
   data,
   showMenu = true,
-  showAnswerForm = false
+  showAnswerForm = true,
+  onDelete
 }) {
 
+  const [answers, setAnswers] = useState(data.answers);
+  const [editMode, setEditMode] = useState(false);
   const [rejected, setRejected] = useState(false);
-  const isAnswerd = data.answers?.length > 0;
+
+  const isAnswerd = answers?.length > 0 || rejected;
   const badgeActive = isAnswerd || rejected;
+  const answerContent = answers[0]?.content || "";
+
+  const handleEdit = () => {
+    setEditMode(true);
+  };
+
+  const handleDelete = () => {
+    onDelete?.(data.id);
+  };
 
   const handleReject = () => {
     setRejected(true);
+    setAnswers([]);
+    setEditMode(false);
   };
+
+  const handleSubmitAnswer = (text) => {
+    setAnswers([{ content: text }]);
+    setEditMode(false);
+    setRejected(false);
+  }
 
   return (
     <Container>
@@ -26,7 +47,11 @@ export default function TestCard({
       <Header>
         <Badge $answerd={badgeActive} />
         {showMenu && (
-          <KebabMenu onReject={handleReject} />
+          <KebabMenu
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onReject={handleReject}
+          />
         )}
       </Header>
 
@@ -42,14 +67,15 @@ export default function TestCard({
             <Nickname>{data.author || "아초는 고양이"}</Nickname>
             <Date>{data.date || "2주전"}</Date>
           </UserInfo>
-          {rejected ? (
+          {showAnswerForm && (editMode || !isAnswerd) ? (
+            <AnswerForm
+              defaultValue={answerContent}
+              onSubmit={handleSubmitAnswer}
+            />
+          ) : rejected ? (
             <RejectedText>답변 거절</RejectedText>
-          ) : isAnswerd ? (
-            data.answers[0].content
-          ) : showAnswerForm ? (
-            <AnswerForm />
           ) : (
-            "아직 답변이 없습니다"
+            isAnswerd && <AnswerText>{answerContent}</AnswerText>
           )}
         </Content>
       </Form>
@@ -152,4 +178,11 @@ const Footer = styled.div`
   color: #666;
   border-top: 1px solid var(--grayScale-30);
   padding-top: 24px;
+`;
+
+const AnswerText = styled.div`
+  font-size: 16px;
+  color: var(--grayScale-60, #000);
+  font-weight: 400;
+  line-height: 22px;
 `;

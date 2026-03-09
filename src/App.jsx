@@ -6,7 +6,7 @@ function App() {
     {
       id: 1,
       question: "좋아하는 음식?",
-      answers: "피자"
+      answers: [{ content: "피자" }]
     },
     {
       id: 2,
@@ -16,7 +16,7 @@ function App() {
     {
       id: 3,
       question: "좋아하는 음식?",
-      answers: "치킨"
+      answers: [{ content: "치킨" }]
     }
   ];
 

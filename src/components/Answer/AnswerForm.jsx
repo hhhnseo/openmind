@@ -2,8 +2,8 @@ import { useState } from "react"
 import styled from "styled-components";
 import InputTextArea from "../common/InputTextArea";
 
-const AnswerForm = ({ onSubmit }) => {
-  const [value, setValue] = useState("");
+const AnswerForm = ({ onSubmit, defaultValue = "" }) => {
+  const [value, setValue] = useState(defaultValue);
 
   const handleChange = (e) => {
     setValue(e.target.value);

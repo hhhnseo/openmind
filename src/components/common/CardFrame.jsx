@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import MsgIcon from "../../assets/icons/icon-messages.svg?react";
 import EmptyIcon from "../../assets/images/image-empty.svg?react";
-import TestCard from "./TestCard";
+import FeedCard from "./FeedCard";
+import { useState } from "react";
 
 export default function CardFrame({
   questions = [],
@@ -10,6 +11,12 @@ export default function CardFrame({
 }) {
   const count = questions?.length ?? 0;
   const isEmpty = !questions || questions.length === 0;
+  const [cardList, setCardList] = useState(questions);
+
+  const handleDelete = (id) => {
+    setCardList((prev) =>
+      prev.filter((q) => q.id !== id));
+  };
 
   return (
     <Container>
@@ -30,12 +37,13 @@ export default function CardFrame({
         </EmptyWrapper>
       ) : (
         <CardList>
-          {questions.map((q) => (
-            <TestCard
+          {cardList.map((q) => (
+            <FeedCard
               key={q.id}
               data={q}
               showMenu={showMenu}
               showAnswerForm={showAnswerForm}
+              onDelete={handleDelete}
             />
           ))}
         </CardList>
