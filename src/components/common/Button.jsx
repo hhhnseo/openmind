@@ -37,14 +37,12 @@ const StyledButton = styled.button`
     transform: translateX(5px);
     transition: transform 0.5s ease-in-out;
   }
-  // 크기 (Size) 설정
-  ${({ $size }) =>
-    $size === 'small' &&
-    `
-      padding: 0px 12px;
-      font-size: 14px;
-      height: 34px;
-    `}
+
+  @media only screen and (max-width: 376px) {
+    padding: 0px 12px;
+    font-size: 14px;
+    height: 34px;
+  }
 
   // 종류 (Variant) 설정
   ${({ $variant }) =>
@@ -70,9 +68,9 @@ const StyledButton = styled.button`
     `}
 `;
 
-export default function Button({ variant, size, children, ...props }) {
+export default function Button({ variant, children, ...props }) {
   return (
-    <StyledButton $variant={variant} $size={size} {...props}>
+    <StyledButton $variant={variant} {...props}>
       {children}
       <img src={ArrowIcon} />
     </StyledButton>
@@ -80,26 +78,14 @@ export default function Button({ variant, size, children, ...props }) {
 }
 
 /* 사용 예시
-  <Button $variant="primary">기본 버튼</Button>
-  <Button $variant="outline">작은 버튼</Button>
-  <Button $variant="primary" $size="small">
-    기본 버튼
-  </Button>
-  <Button $variant="outline" $size="small">
-    작은 버튼
-  </Button>
+  <Button $variant="primary">어두운 버튼</Button>
+  <Button $variant="outline">밝은 버튼</Button>
 
   // Inactivate 상태
   <Button $variant="primary" disabled>
-    기본 버튼
+    어두운 버튼
   </Button>
   <Button $variant="outline" disabled>
-    작은 버튼
-  </Button>
-  <Button $variant="primary" $size="small" disabled>
-    기본 버튼
-  </Button>
-  <Button $variant="outline" $size="small" disabled>
-    작은 버튼
+    밝은 버튼
   </Button>
 */
