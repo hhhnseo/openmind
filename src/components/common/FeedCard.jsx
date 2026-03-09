@@ -17,8 +17,8 @@ export default function FeedCard({
   const [editMode, setEditMode] = useState(false);
   const [rejected, setRejected] = useState(false);
 
-  const isAnswerd = answers?.length > 0 || rejected;
-  const badgeActive = isAnswerd || rejected;
+  const isAnswered = answers?.length > 0 || rejected;
+  const badgeActive = isAnswered || rejected;
   const answerContent = answers[0]?.content || "";
 
   const handleEdit = () => {
@@ -45,7 +45,7 @@ export default function FeedCard({
     <Container>
       
       <Header>
-        <Badge $answerd={badgeActive} />
+        <Badge $answered={badgeActive} />
         {showMenu && (
           <KebabMenu
             onEdit={handleEdit}
@@ -67,7 +67,7 @@ export default function FeedCard({
             <Nickname>{data.author || "아초는 고양이"}</Nickname>
             <Date>{data.date || "2주전"}</Date>
           </UserInfo>
-          {showAnswerForm && (editMode || !isAnswerd) ? (
+          {showAnswerForm && (editMode || !isAnswered) ? (
             <AnswerForm
               defaultValue={answerContent}
               onSubmit={handleSubmitAnswer}
@@ -75,7 +75,7 @@ export default function FeedCard({
           ) : rejected ? (
             <RejectedText>답변 거절</RejectedText>
           ) : (
-            isAnswerd && <AnswerText>{answerContent}</AnswerText>
+            isAnswered && <AnswerText>{answerContent}</AnswerText>
           )}
         </Content>
       </Form>

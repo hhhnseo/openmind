@@ -9,8 +9,8 @@ const Badge = styled.div`
   border-radius: 8px;
   background: var(--Grayscale-10, #FFF);
   border: 1px solid
-    ${({ $answerd }) => ($answerd ? "var(--brown-40)" : "var(--grayScale-40)")};
-  color: ${({ $answerd }) => ($answerd ? "var(--brown-40)" : "var(--grayScale-40)")};
+    ${({ $answered }) => ($answered ? "var(--brown-40)" : "var(--grayScale-40)")};
+  color: ${({ $answered }) => ($answered ? "var(--brown-40)" : "var(--grayScale-40)")};
   font-feature-settings: 'liga' off, 'clig' off;
   font-family: Pretendard;
   font-size: 14px;
@@ -19,8 +19,8 @@ const Badge = styled.div`
   line-height: 18px; /* 128.571% */
 
   &::before {
-    content: "${({ $answerd }) =>
-      $answerd ? "답변 완료" : "미답변"}";
+    content: "${({ $answered }) =>
+      $answered ? "답변 완료" : "미답변"}";
   }
 `;
 
