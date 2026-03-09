@@ -1,10 +1,14 @@
 import { Routes, Route } from 'react-router-dom';
-import './App.css';
+import './index.css';
+import AnswerPage from './pages/AnswerPage';
 
 function App() {
-  return <Routes>
-    
-  </Routes>;
+  return (
+    <Routes>
+      <Route path="/" element={<AnswerPage />} />
+    </Routes>
+  )
+
 }
 
 export default App;
