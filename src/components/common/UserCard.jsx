@@ -61,6 +61,8 @@ function UserCard({
   );
 }
 
+export default UserCard;
+
 const ProfileCard = styled.div`
   ${({ $size }) => SIZE[$size] ?? SIZE.large};
 
@@ -150,5 +152,3 @@ const CountBox = styled.div`
 `;
 
 const Count = styled.span``;
-
-export default UserCard;

@@ -77,6 +77,8 @@ function Dropdown({
   );
 }
 
+export default Dropdown;
+
 const DropdownContainer = styled.div`
   position: relative;
   width: 80px;
@@ -157,5 +159,3 @@ const DropdownOptionButton = styled.button`
     color: var(--blue-50);
   }
 `;
-
-export default Dropdown;

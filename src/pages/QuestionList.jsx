@@ -20,7 +20,7 @@ const userList = [
   { id: 8, name: '아초는 고양이8', count: 8000 },
 ];
 
-function QuestionListPage() {
+function QuestionList() {
   return (
     <Page>
       <Inner>
@@ -62,6 +62,8 @@ function QuestionListPage() {
     </Page>
   );
 }
+
+export default QuestionList;
 
 const Page = styled.div`
   padding: 40px 0 100px;
@@ -148,5 +150,3 @@ const CardArea = styled.div`
     gap: 16px;
   }
 `;
-
-export default QuestionListPage;

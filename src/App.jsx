@@ -1,9 +1,14 @@
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
+import QuestionList from './pages/QuestionList';
 
 function App() {
-  return <Routes></Routes>;
-
+  return (
+    <Routes>
+      <Route path="/list" element={<QuestionList />} />
+      {/* <Route path="/list" element={<Home />} /> */}
+    </Routes>
+  );
 }
 
 export default App;

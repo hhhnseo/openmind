@@ -56,6 +56,8 @@ function Pagination({ size = 'large', responsive = false }) {
   );
 }
 
+export default Pagination;
+
 const PaginationWrap = styled.div`
   display: flex;
   justify-content: center;
@@ -116,5 +118,3 @@ const PageNavLink = styled.button`
 
   font-weight: ${({ $active }) => ($active ? 500 : 400)};
 `;
-
-export default Pagination;
