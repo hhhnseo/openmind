@@ -1,34 +1,9 @@
-import './App.css'
-import CardFrame from './components/common/CardFrame';
+import { Routes, Route } from 'react-router-dom';
+import './App.css';
 
 function App() {
-  const questions = [
-    {
-      id: 1,
-      question: "좋아하는 음식?",
-      answers: [{ content: "피자" }]
-    },
-    {
-      id: 2,
-      question: "좋아하는 음식?",
-      answers: []
-    },
-    {
-      id: 3,
-      question: "좋아하는 음식?",
-      answers: [{ content: "치킨" }]
-    }
-  ];
+  return <Routes></Routes>;
 
-  return (
-    <div>
-      <CardFrame
-        questions={questions}
-        showMenu={true}
-        showAnswerForm={true}
-      />
-    </div>
-  )
 }
 
 export default App;
