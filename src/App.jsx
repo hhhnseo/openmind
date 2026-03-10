@@ -3,6 +3,8 @@ import './index.css';
 import './App.css';
 import Home from './pages/Home';
 import QuestionList from './pages/QuestionList';
+import Ranking from './pages/Ranking';
+import Answer from './pages/Answer';
 
 
 function App() {
@@ -10,6 +12,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/list" element={<QuestionList />} />
+      <Route path="/ranking" element={<Ranking />} />
+      <Route path="/answer" element={<Answer />} />
     </Routes>
   );
 }
