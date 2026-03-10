@@ -1,37 +1,51 @@
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import MainImg from '../assets/images/image-main.svg';
 import Login from '../components/home/Login';
 import Logo from '../components/common/Logo';
 import Button from '../components/common/Button';
-import { useEffect } from 'react';
+import deleteSubjects from '../apis/home/deleteSubjects';
 
 const Home = () => {
   const navigate = useNavigate();
+
+  const handleDelete = useCallback(async (id) => {
+    if (!localStorage) {
+      return;
+    }
+
+    try {
+      await deleteSubjects(id);
+    } catch (error) {
+      console.error('10분 만료 자동 삭제 오류', error);
+    }
+  }, []);
 
   useEffect(() => {
     const storageData = localStorage.getItem('subjectId');
 
     if (!storageData) return;
 
-    try {
-      const { id, expiry } = JSON.parse(storageData);
-      const now = new Date().getTime();
+    const idExpireCheck = async () => {
+      try {
+        const { id, expiry } = JSON.parse(storageData);
+        const now = new Date().getTime();
 
-      if (now > expiry) {
+        if (now > expiry) {
+          await handleDelete(id);
+        } else {
+          navigate(`/post/${id}/answer`);
+        }
+      } catch (error) {
+        console.error('Storage data error:', error);
+      } finally {
         localStorage.removeItem('subjectId');
-      } else {
-        navigate(`/post/${id}/answer`);
       }
-    } catch (error) {
-      console.error('Storage data error:', error);
-      localStorage.removeItem('subjectId');
-    }
-  }, [navigate]);
+    };
 
-  const goToList = () => {
-    navigate('/list');
-  };
+    idExpireCheck();
+  }, [navigate, handleDelete]);
 
   return (
     <Container>
@@ -39,14 +53,14 @@ const Home = () => {
         <Wrapper>
           <ButtonContainer>
             <DesktopButton>
-              <Button variant="outline" onClick={goToList}>
-                질문하러 가기
-              </Button>
+              <Link to="/list">
+                <Button variant="outline">질문하러 가기</Button>
+              </Link>
             </DesktopButton>
             <MobileButton>
-              <Button variant="outline" onClick={goToList}>
-                질문하러 가기
-              </Button>
+              <Link to="/list">
+                <Button variant="outline">질문하러 가기</Button>
+              </Link>
             </MobileButton>
           </ButtonContainer>
           <DesktopLogo>
