@@ -41,7 +41,8 @@ const AnswerForm = ({ onSubmit, defaultValue = "" }) => {
 const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 532px;
+  min-width: 490px;
+  margin: 0 auto;
   gap: 8px;
   font-size: 16px;
   font-style: normal;
