@@ -1,6 +1,17 @@
 import styled, { css } from 'styled-components';
 import logo from '../../assets/images/image-logo.svg?react';
 
+const Image = styled(logo)`
+  ${({ $size }) => $size}
+`;
+
+const Logo = ({ size = 'medium' }) => {
+  return <Image $size={SIZE[size]} />;
+};
+
+export default Logo;
+
+//props의 size를 넘겨주면됨
 const SIZE = {
   large: css`
     width: 456px;
@@ -15,15 +26,3 @@ const SIZE = {
     height: 57px;
   `,
 };
-
-const Image = styled(logo)`
-  ${({ $size }) => $size}
-`;
-
-const Logo = ({ size = 'medium' }) => {
-  return <Image $size={SIZE[size]} />;
-};
-
-export default Logo;
-
-//props의 size를 넘겨주면됨
