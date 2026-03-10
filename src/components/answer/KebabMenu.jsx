@@ -5,7 +5,7 @@ import EditIcon from '../../assets/icons/icon-edit.svg?react';
 import DeleteIcon from '../../assets/icons/icon-close.svg?react';
 import RejectIcon from '../../assets/icons/icon-rejection.svg?react';
 
-export default function KebabMenu({
+export default function MenuKebab({
   onEdit,
   onDelete,
   onReject
