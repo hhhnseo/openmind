@@ -48,7 +48,7 @@ export default function FeedCard({
         <Badge $answered={badgeActive} />
         {showMenu && (
           <KebabMenu
-            onEdit={handleEdit}
+            onEdit={isAnswered ? handleEdit : undefined}
             onDelete={handleDelete}
             onReject={handleReject}
           />
@@ -163,6 +163,7 @@ const RejectedText = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%;
   font-size: 16px;
   color: var(--garyScale-60, #000);
   font-weight: 400;

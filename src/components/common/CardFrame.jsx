@@ -9,10 +9,11 @@ export default function CardFrame({
   showMenu = true,
   showAnswerForm = false
 }) {
-  const count = questions?.length ?? 0;
-  const isEmpty = !questions || questions.length === 0;
-  const [cardList, setCardList] = useState(questions);
 
+  const [cardList, setCardList] = useState(questions);
+  const count = cardList.length;
+  const isEmpty = cardList.length === 0;
+  
   const handleDelete = (id) => {
     setCardList((prev) =>
       prev.filter((q) => q.id !== id));
