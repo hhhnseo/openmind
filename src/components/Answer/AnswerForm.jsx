@@ -1,6 +1,6 @@
-import { useState } from "react"
-import styled from "styled-components";
-import InputTextArea from "../common/InputTextArea";
+import { useState } from 'react';
+import styled from 'styled-components';
+import InputTextArea from '../common/InputTextArea';
 
 const AnswerForm = ({ onSubmit, defaultValue = "" }) => {
   const [value, setValue] = useState(defaultValue);
