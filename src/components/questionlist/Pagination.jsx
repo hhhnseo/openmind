@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components';
 
+const MOBILE = '768px';
+
 const SIZE = {
   large: css`
     --box: 40px;
@@ -14,61 +16,13 @@ const SIZE = {
 const PAGES = [1, 2, 3, 4, 5];
 const ACTIVE_PAGE = 4;
 
-const PaginationWrap = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  ${({ $size }) => SIZE[$size] ?? SIZE.large}
-`;
-
-const PageNavArrowBox = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  width: var(--box);
-  height: var(--box);
-`;
-
-const PageNavArrow = styled.button`
-  width: 100%;
-  height: 100%;
-
-  font-size: var(--font);
-  font-family: Actor, sans-serif;
-  color: var(--grayScale-40);
-`;
-
-const PageNavList = styled.ol`
-  display: flex;
-`;
-
-const PageNavItem = styled.li`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  width: var(--box);
-  height: var(--box);
-`;
-
-const PageNavLink = styled.button`
-  width: 100%;
-  height: 100%;
-
-  font-size: var(--font);
-  font-family: Actor, sans-serif;
-
-  color: ${({ $active }) =>
-    $active ? 'var(--brown-40)' : 'var(--grayScale-40)'};
-
-  font-weight: ${({ $active }) => ($active ? 500 : 400)};
-`;
-
-function Pagination({ size = 'large' }) {
+function Pagination({ size = 'large', responsive = false }) {
   return (
-    <PaginationWrap $size={size} aria-label="페이지네이션">
+    <PaginationWrap
+      $size={size}
+      $responsive={responsive}
+      aria-label="페이지네이션"
+    >
       <PageNavArrowBox>
         <PageNavArrow type="button" aria-label="이전 페이지">
           {'<'}
@@ -103,3 +57,64 @@ function Pagination({ size = 'large' }) {
 }
 
 export default Pagination;
+
+const PaginationWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  ${({ $size }) => SIZE[$size] ?? SIZE.large}
+
+  ${({ $responsive }) =>
+    $responsive &&
+    css`
+      @media (max-width: ${MOBILE}) {
+        ${SIZE.small}
+      }
+    `}
+`;
+
+const PageNavArrowBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: var(--box);
+  height: var(--box);
+`;
+
+const PageNavArrow = styled.button`
+  width: 100%;
+  height: 100%;
+
+  font-size: var(--font);
+  font-family: Actor, sans-serif;
+  color: var(--grayScale-40);
+`;
+
+const PageNavList = styled.ol`
+  display: flex;
+`;
+
+const PageNavItem = styled.li`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: var(--box);
+  height: var(--box);
+`;
+
+const PageNavLink = styled.button`
+  padding: 3px 6px;
+  width: auto;
+  height: auto;
+
+  font-size: var(--font);
+  font-family: Actor, sans-serif;
+
+  color: ${({ $active }) =>
+    $active ? 'var(--brown-40)' : 'var(--grayScale-40)'};
+
+  font-weight: ${({ $active }) => ($active ? 500 : 400)};
+`;
