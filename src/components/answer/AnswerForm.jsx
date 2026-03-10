@@ -6,6 +6,7 @@ const AnswerForm = ({ onSubmit, defaultValue = "" }) => {
   const [value, setValue] = useState(defaultValue);
 
   const handleChange = (e) => {
+    
     setValue(e.target.value);
 
     console.log(e.target.value);
