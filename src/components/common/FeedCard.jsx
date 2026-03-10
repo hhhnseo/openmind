@@ -48,7 +48,7 @@ export default function FeedCard({
         <Badge $answered={badgeActive} />
         {showMenu && (
           <KebabMenu
-            onEdit={handleEdit}
+            onEdit={isAnswered ? handleEdit : undefined}
             onDelete={handleDelete}
             onReject={handleReject}
           />
