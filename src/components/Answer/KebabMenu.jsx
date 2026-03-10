@@ -1,9 +1,9 @@
-import { useState } from "react";
-import styled from "styled-components";
-import KebabIcon from "../../assets/icons/icon-more.svg?react";
-import EditIcon from "../../assets/icons/icon-edit.svg?react";
-import DeleteIcon from "../../assets/icons/icon-close.svg?react";
-import RejectIcon from "../../assets/icons/icon-rejection.svg?react";
+import { useState } from 'react';
+import styled from 'styled-components';
+import KebabIcon from '../../assets/icons/icon-more.svg?react';
+import EditIcon from '../../assets/icons/icon-edit.svg?react';
+import DeleteIcon from '../../assets/icons/icon-close.svg?react';
+import RejectIcon from '../../assets/icons/icon-rejection.svg?react';
 
 export default function KebabMenu({
   onEdit,
@@ -32,7 +32,7 @@ export default function KebabMenu({
             수정하기
           </MenuItem>
           )}
-          
+
           <MenuItem onClick={handleDelete}>
             <Icon>
               <DeleteIcon />
