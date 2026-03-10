@@ -4,7 +4,7 @@ import Logo from '../components/common/Logo';
 import UserCard from '../components/common/UserCard';
 import LikeButton from '../components/common/LikeButton';
 
-function Lanking() {
+function Ranking() {
   const bestUser = [
     {
       id: 1,
@@ -31,7 +31,7 @@ function Lanking() {
         <Logo size="small" />
         <Button $variant="outline">질문하러 가기</Button>
       </Header>
-      <LankingWrap>
+      <RankingWrap>
         <div>
           <Title>인기 질문자 순위</Title>
           <BestUser>
@@ -57,12 +57,12 @@ function Lanking() {
             ))}
           </BestCard>
         </div>
-      </LankingWrap>
+      </RankingWrap>
     </Container>
   );
 }
 
-export default Lanking;
+export default Ranking;
 
 const Container = styled.div`
   max-width: 934px;
@@ -89,7 +89,7 @@ const Header = styled.div`
   }
 `;
 
-const LankingWrap = styled.div`
+const RankingWrap = styled.div`
   display: flex;
   flex-direction: column;
   gap: 40px;
