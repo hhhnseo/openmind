@@ -3,7 +3,7 @@ import ProfileImg from '../../assets/images/image-profile.svg';
 import LikeButton from './LikeButton';
 import Badge from "./Badge";
 import { useState } from "react";
-import AnswerForm from '../answer/FormAnswer';
+import AnswerForm from '../answer/AnswerForm';
 import KebabMenu from '../answer/KebabMenu';
 
 export default function FeedCard({

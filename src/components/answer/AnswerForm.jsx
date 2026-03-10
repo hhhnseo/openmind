@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import InputTextArea from '../common/InputTextArea';
 
-const AnswerForm = ({ onSubmit, defaultValue = "" }) => {
+const FormAnswer = ({ onSubmit, defaultValue = "" }) => {
   const [value, setValue] = useState(defaultValue);
 
   const handleChange = (e) => {
@@ -67,4 +67,4 @@ const SubmitButton = styled.button`
     disabled ? "default" : "pointer"};
 `;
 
-export default AnswerForm;
+export default FormAnswer;
