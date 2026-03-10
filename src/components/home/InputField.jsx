@@ -1,6 +1,21 @@
 import styled from 'styled-components';
 import personIcon from '../../assets/icons/icon-person.svg?react';
 
+const InputField = ({ placeholder, value, handleChange }) => {
+  return (
+    <Container>
+      <Image />
+      <Input
+        placeholder={placeholder}
+        value={value}
+        onChange={handleChange}
+      ></Input>
+    </Container>
+  );
+};
+
+export default InputField;
+
 const Container = styled.div`
   display: flex;
   justify-content: center;
@@ -10,7 +25,7 @@ const Container = styled.div`
   background-color: var(--grayScale-10);
   border: 1px solid var(--grayScale-40);
   border-radius: 8px;
-  width: 336px;
+  width: 100%;
 
   &:focus-within {
     border-color: var(--brown-40);
@@ -38,18 +53,3 @@ const Input = styled.input`
     color: var(--grayScale-40);
   }
 `;
-
-const InputField = ({ placeholder, value, onChange }) => {
-  return (
-    <Container>
-      <Image />
-      <Input
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-      ></Input>
-    </Container>
-  );
-};
-
-export default InputField;

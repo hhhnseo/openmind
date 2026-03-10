@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import MessagesIcon from '../../assets/icons/icon-messages.svg?react';
 import profileImage from '../../assets/images/image-profile.svg';
 
+const MOBILE = '768px';
+
 const SIZE = {
   large: css`
     --card-height: 187px;
@@ -13,7 +15,6 @@ const SIZE = {
     --label-font: 16px;
     --icon: 18px;
     --count-font: 16px;
-    --hover-scale: 1.03;
   `,
   small: css`
     --card-height: 168px;
@@ -23,15 +24,58 @@ const SIZE = {
     --label-font: 14px;
     --icon: 16px;
     --count-font: 14px;
-    --hover-scale: 1;
   `,
 };
+
+function UserCard({
+  size = 'large',
+  responsive = false,
+  id = 1,
+  name = '아초는고양이',
+  count = 9,
+  profileSrc = profileImage,
+}) {
+  return (
+    <ProfileCard $size={size} $responsive={responsive}>
+      <CardLink
+        to={`/post/${id}/answer`}
+        aria-label={`${name}님의 질문 답변 페이지로 이동`}
+      >
+        <ProfileBox>
+          <ProfileImage src={profileSrc} alt={`${name} 프로필 이미지`} />
+          <ProfileName>{name}</ProfileName>
+        </ProfileBox>
+
+        <QuestionInfo>
+          <QuestionLabel>
+            <MessagesIcon />
+            받은 질문
+          </QuestionLabel>
+
+          <CountBox>
+            <Count>{count}</Count>개
+          </CountBox>
+        </QuestionInfo>
+      </CardLink>
+    </ProfileCard>
+  );
+}
+
+export default UserCard;
 
 const ProfileCard = styled.div`
   ${({ $size }) => SIZE[$size] ?? SIZE.large};
 
+  ${({ $responsive }) =>
+    $responsive &&
+    css`
+      @media (max-width: ${MOBILE}) {
+        ${SIZE.small}
+      }
+    `}
+
   width: 100%;
-  max-width: 220px;
+  min-width: 155px;
   height: var(--card-height);
   overflow: hidden;
 
@@ -48,12 +92,6 @@ const CardLink = styled(Link)`
 
   width: 100%;
   height: 100%;
-
-  transition: transform 0.3s ease-in-out;
-
-  &:hover {
-    transform: scale(var(--hover-scale));
-  }
 `;
 
 const ProfileBox = styled.div`
@@ -114,38 +152,3 @@ const CountBox = styled.div`
 `;
 
 const Count = styled.span``;
-
-function UserCard({
-  size = 'large',
-  id = 1,
-  name = '아초는고양이',
-  count = 9,
-  profileSrc = profileImage,
-}) {
-  return (
-    <ProfileCard $size={size}>
-      <CardLink
-        to={`/post/${id}/answer`}
-        aria-label={`${name}님의 질문 답변 페이지로 이동`}
-      >
-        <ProfileBox>
-          <ProfileImage src={profileSrc} alt={`${name} 프로필 이미지`} />
-          <ProfileName>{name}</ProfileName>
-        </ProfileBox>
-
-        <QuestionInfo>
-          <QuestionLabel>
-            <MessagesIcon />
-            받은 질문
-          </QuestionLabel>
-
-          <CountBox>
-            <Count>{count}</Count>개
-          </CountBox>
-        </QuestionInfo>
-      </CardLink>
-    </ProfileCard>
-  );
-}
-
-export default UserCard;

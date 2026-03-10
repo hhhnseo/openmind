@@ -13,7 +13,7 @@ const Layout = ({ children }) => {
         <HeroImg src={heroImg} alt="배너 배경" />
         <ProfileOverlay>
           <button onClick={() => navigate('/')}>
-            <Logo size="small" onClick />
+            <Logo size="small" />
           </button>
           <ProfileImage src={profileImg} alt="프로필 이미지" />
           <Username>아초는고양이</Username>
