@@ -3,26 +3,89 @@ import MsgIcon from "../../assets/icons/icon-messages.svg?react";
 import EmptyIcon from "../../assets/images/image-empty.svg?react";
 import FeedCard from "./FeedCard";
 import { useEffect, useState } from "react";
+import getQuestions from "../../apis/questions/getQuestions";
+import deleteQuestion from "../../apis/questions/deleteQuestion";
 
 export default function CardFrame({
-  questions,
   showMenu = true,
-  showAnswerForm = false
+  showAnswerForm = false,
+  deleteSignal
 }) {
 
   const [cardList, setCardList] = useState([]);
-
-  useEffect(() => {
-    setCardList(questions);
-  }, [questions]);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const count = cardList.length;
   const isEmpty = cardList.length === 0;
-  
-  const handleDelete = (id) => {
-    setCardList((prev) =>
-      prev.filter((q) => q.id !== id));
+
+  useEffect(() => {
+
+    if (isDeleting) return;
+
+    const fetchQuestions = async () => {
+
+      try {
+
+        const subjectId = localStorage.getItem("subjectId");
+
+        const res = await getQuestions(subjectId);
+
+        const results = res?.results ?? [];
+
+        const converted = results.map((q) => ({
+          id: q.id,
+          question: q.content,
+          author: "익명",
+          date: q.createdAt,
+          like: q.like,
+          dislike: q.dislike,
+          answers: q.answer ? [q.answer] : []
+        }));
+
+        setCardList(converted);
+
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchQuestions();
+  }, [isDeleting]);
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteQuestion(id);
+
+      setCardList((prev) =>
+        prev.filter((q) => q.id !== id)
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  useEffect(() => {
+
+    if (!deleteSignal) return;
+
+    const deleteAll = async () => {
+
+      try {
+
+        setIsDeleting(true);
+        for (const q of cardList) {
+          await deleteQuestion(q.id);
+        }
+        
+        setCardList([]);
+
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    deleteAll();
+    
+  }, [deleteSignal]);
 
   return (
     <Container>

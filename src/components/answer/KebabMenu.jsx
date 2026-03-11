@@ -12,9 +12,20 @@ export default function KebabMenu({
 }) {
   const [open, setOpen] = useState(false);
 
-  const handleEdit = onEdit || (() => console.log("수정하기"));
-  const handleDelete = onDelete || (() => console.log("삭제하기"));
-  const handleReject = onReject || (() => console.log("답변거절"));
+  const handleEdit = () => {
+    setOpen(false);
+    onEdit?.();
+  };
+
+  const handleDelete = () => {
+    setOpen(false);
+    onDelete?.();
+  };
+
+  const handleReject = () => {
+    setOpen(false);
+    onReject?.();
+  };
 
   return (
     <KebabWrapper>
@@ -24,29 +35,34 @@ export default function KebabMenu({
 
       {open && (
         <Dropdown>
+
           {onEdit && (
             <MenuItem onClick={handleEdit}>
-            <Icon>
-              <EditIcon />
-            </Icon>
-            수정하기
-          </MenuItem>
+              <Icon>
+                <EditIcon />
+              </Icon>
+              수정하기
+            </MenuItem>
           )}
 
-          <MenuItem onClick={handleDelete}>
-            <Icon>
-              <DeleteIcon />
-            </Icon>
-            삭제하기
-          </MenuItem>
+          {onDelete && (
+            <MenuItem onClick={handleDelete}>
+              <Icon>
+                <DeleteIcon />
+              </Icon>
+              삭제하기
+            </MenuItem>
+          )}
 
-          <MenuItem onClick={handleReject}>
-            <Icon>
-              <RejectIcon />
-            </Icon>
-            답변거절
-          </MenuItem>
-          
+          {onReject && (
+            <MenuItem onClick={handleReject}>
+              <Icon>
+                <RejectIcon />
+              </Icon>
+              답변거절
+            </MenuItem>
+          )}
+
         </Dropdown>
       )}
     </KebabWrapper>
@@ -80,12 +96,11 @@ const Dropdown = styled.div`
 
 const MenuItem = styled.button`
   display: flex;
-  flex: 1 0 0;
   justify-content: center;
   align-items: center;
   gap: 8px;
-  align-self: stretch;
 
+  width: 100%;
   padding: 8px 12px;
   border: none;
   background: var(--grayScale-10, #fff);
@@ -110,6 +125,7 @@ const MenuItem = styled.button`
 const Icon = styled.span`
   display: flex;
   align-items: center;
+
   svg path {
     fill: currentColor;
   }

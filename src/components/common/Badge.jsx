@@ -9,8 +9,16 @@ const Badge = styled.div`
   border-radius: 8px;
   background: var(--Grayscale-10, #FFF);
   border: 1px solid
-    ${({ $answered }) => ($answered ? "var(--brown-40)" : "var(--grayScale-40)")};
-  color: ${({ $answered }) => ($answered ? "var(--brown-40)" : "var(--grayScale-40)")};
+    ${({ $status }) => {
+      if ($status === "rejected") return "var(--grayScale-40)";
+      if ($status === "answered") return "var(--brown-40)";
+      return "var(--grayScale-40)";
+    }};
+  color: ${({ $status }) => {
+    if ($status === "rejected") return "var(--grayScale-40)";
+    if ($status === "answered") return "var(--brown-40)";
+    return "var(--grayScale-40)";
+  }};
   font-feature-settings: 'liga' off, 'clig' off;
   font-family: Pretendard;
   font-size: 14px;
@@ -19,8 +27,11 @@ const Badge = styled.div`
   line-height: 18px; /* 128.571% */
 
   &::before {
-    content: "${({ $answered }) =>
-      $answered ? "답변 완료" : "미답변"}";
+    content: "${({ $status }) => {
+      if ($status === "rejected") return "답변 거절";
+      if ($status === "answered") return "답변 완료";
+      return "미답변";
+    }}";
   }
 `;
 

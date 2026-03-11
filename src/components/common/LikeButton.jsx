@@ -2,34 +2,52 @@ import styled from "styled-components";
 import ThumbUp from "../../assets/icons/icon-thumbs-up.svg?react";
 import ThumbDown from "../../assets/icons/icon-thumbs-down.svg?react";
 import { useState } from "react";
+import { postReaction } from "../../apis/questions/postReaction";
 
-export default function LikeButton() {
-  const [likeCount, setLikeCount] = useState(10);
-  const [dislikeCount, setDislikeCount] = useState(2);
+export default function LikeButton({
+  questionId,
+  initialLike = 0,
+  initialDislike = 0
+}) {
+  const [likeCount, setLikeCount] = useState(initialLike);
+  const [dislikeCount, setDislikeCount] = useState(initialDislike);
+  const [selected, setSelected] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const [selected, setSelected] = useState(null); 
-  // null | "like" | "dislike"
+  const handleLike = async () => {
+    if (loading || selected === "like") return;
 
-  const handleLike = () => {
-    if (selected === "like") return;
+    try {
+      setLoading(true);
 
-    if (selected === "dislike") {
-      setDislikeCount((prev) => prev - 1);
+      await postReaction(questionId, "like");
+
+      setLikeCount((prev) => prev + 1);
+      setSelected("like");
+
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-
-    setLikeCount((prev) => prev + 1);
-    setSelected("like");
   };
 
-  const handleDislike = () => {
-    if (selected === "dislike") return;
+  const handleDislike = async () => {
+    if (loading || selected === "dislike") return;
 
-    if (selected === "like") {
-      setLikeCount((prev) => prev - 1);
+    try {
+      setLoading(true);
+
+      await postReaction(questionId, "dislike");
+
+      setDislikeCount((prev) => prev + 1);
+      setSelected("dislike");
+
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-
-    setDislikeCount((prev) => prev + 1);
-    setSelected("dislike");
   };
 
   return (
@@ -37,7 +55,6 @@ export default function LikeButton() {
       <Button
         onClick={handleLike}
         $active={selected === "like"}
-        data-active={selected === "like"}
       >
         <Icon>
           <ThumbUp />
@@ -48,7 +65,6 @@ export default function LikeButton() {
       <DislikeButton
         onClick={handleDislike}
         $active={selected === "dislike"}
-        data-active={selected === "dislike"}
       >
         <Icon>
           <ThumbDown />

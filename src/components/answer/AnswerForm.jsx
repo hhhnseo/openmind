@@ -2,38 +2,37 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import InputTextArea from '../common/InputTextArea';
 
-const AnswerForm = ({ onSubmit, defaultValue = "" }) => {
-  const [value, setValue] = useState(defaultValue);
+const AnswerForm = ({
+  onSubmit,
+  defaultValue = "",
+  type = "answer",
+}) => {
+  const [text, setText] = useState(defaultValue);
 
-  const handleChange = (e) => {
-    
-    setValue(e.target.value);
+  const isQuestion = type === "question";
 
-    console.log(e.target.value);
-  };
+  const placeholder = `${isQuestion ? "질문" : "답변"}을 입력해주세요`;
+  const buttonText = isQuestion ? "질문 보내기" : "답변 완료";
 
-  const handleSubmit = () => {
-    const text = value.trim();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    if (!text) return;
+    if (!text.trim()) return;
 
-    console.log("답변 완료:", text);
     onSubmit?.(text);
+    setText("");
   };
 
   return (
-    <FormContainer>
+    <FormContainer onSubmit={handleSubmit}>
       <InputTextArea
-        value={value}
-        onChange={handleChange}
-        placeholder="답변을 입력해주세요"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder={placeholder}
       />
 
-      <SubmitButton
-        disabled={!value.trim()}
-        onClick={handleSubmit}
-      >
-        답변 완료
+      <SubmitButton type="submit">
+        {buttonText}
       </SubmitButton>
     </FormContainer>
   )

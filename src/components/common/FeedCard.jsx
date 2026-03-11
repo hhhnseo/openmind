@@ -5,6 +5,9 @@ import Badge from "./Badge";
 import { useState } from "react";
 import AnswerForm from '../answer/AnswerForm';
 import KebabMenu from '../answer/KebabMenu';
+import postAnswer from '../../apis/answers/postAnswer';
+import deleteQuestion from '../../apis/questions/deleteQuestion';
+import deleteAnswer from '../../apis/answers/deleteAnswer';
 
 export default function FeedCard({
   data,
@@ -12,80 +15,146 @@ export default function FeedCard({
   showAnswerForm = true,
   onDelete
 }) {
-
-  const [answers, setAnswers] = useState(data.answers);
+  
   const [editMode, setEditMode] = useState(false);
-  const [rejected, setRejected] = useState(false);
 
-  const isAnswered = answers?.length > 0 || rejected;
-  const badgeActive = isAnswered || rejected;
-  const answerContent = answers[0]?.content || "";
+  const answer = data.answers?.[0];
+
+  const isRejected = answer?.isRejected;
+  const isAnswered = answer && !isRejected;
+
+  let status = "none";
+
+  if (answer) {
+    status = answer.isRejected ? "rejected" : "answered";
+  }
+
+  const answerContent = answer?.content || "";
+
+  const formatDate = (dateString) => {
+    const now = new Date();
+    const created = new Date(dateString);
+
+    const diff = now - created;
+
+    const minutes = Math.floor(diff / (1000 * 60));
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const weeks = Math.floor(days / 7);
+    const months = Math.floor(days / 30);
+
+    if (minutes < 1) return "방금 전";
+    if (minutes < 60) return `${minutes}분 전`;
+    if (hours < 24) return `${hours}시간 전`;
+    if (days === 1) return "어제";
+    if (days < 7) return `${days}일 전`
+    if (weeks < 5) return `${weeks}주 전`;
+    return `${months}개월 전`;
+  };
 
   const handleEdit = () => {
     setEditMode(true);
   };
 
-  const handleDelete = () => {
-    onDelete?.(data.id);
+  const handleDelete = async () => {
+    try {
+      await deleteQuestion(data.id);
+      onDelete?.(data.id);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const handleReject = () => {
-    setRejected(true);
-    setAnswers([]);
-    setEditMode(false);
+  const handleReject = async () => {
+    try {
+
+      if (answer?.id) {
+        await deleteAnswer(answer.id);
+      }
+
+      window.location.reload();
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const handleSubmitAnswer = (text) => {
-    setAnswers([{ content: text }]);
-    setEditMode(false);
-    setRejected(false);
-  }
+  const handleSubmitAnswer = async (text) => {
+    try {
+
+      if (answer?.id) {
+        await deleteAnswer(answer.id);
+      }
+
+      await postAnswer(data.id, text);
+
+      window.location.reload();
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Container>
-      
+
       <Header>
-        <Badge $answered={badgeActive} />
+        <Badge $status={status} />
+
         {showMenu && (
           <KebabMenu
-            onEdit={isAnswered ? handleEdit : undefined}
+            onEdit={answer ? handleEdit : undefined}
             onDelete={handleDelete}
-            onReject={handleReject}
+            onReject={answer ? handleReject : undefined}
           />
         )}
+
       </Header>
 
       <Question>
-        <QuestionDate>질문 • {data.date || "2주전"}</QuestionDate>
-        {data.question}
+        <QuestionDate>
+          질문 • {data.createdAt ? formatDate(data.createdAt) : ""}
+        </QuestionDate>
+        {data.content}
       </Question>
 
       <Form>
         <Profile src={ProfileImg} />
+
         <Content>
+
           <UserInfo>
             <Nickname>{data.author || "아초는 고양이"}</Nickname>
-            <Date>{data.date || "2주전"}</Date>
+            <Date>{data.createdAt ? formatDate(data.createdAt) : ""}</Date>
           </UserInfo>
+
           {showAnswerForm && (editMode || !isAnswered) ? (
             <AnswerForm
+              type="answer"
               defaultValue={answerContent}
               onSubmit={handleSubmitAnswer}
             />
-          ) : rejected ? (
+          ) : isRejected ? (
             <RejectedText>답변 거절</RejectedText>
           ) : (
             isAnswered && <AnswerText>{answerContent}</AnswerText>
           )}
+
         </Content>
+
       </Form>
 
       <Footer>
-        <LikeButton />
+        <LikeButton
+          questionId={data.id}
+          initialLike={data.like}
+          initialDislike={data.dislike}
+        />
       </Footer>
+
     </Container>
   )
-};
+}
 
 const Container = styled.div`
   display: flex;
@@ -140,7 +209,6 @@ const Date = styled.span`
 
 const Question = styled.div`
   display: flex;
-  align-items: flex-start;
   flex-direction: column;
   font-weight: 400;
   font-size: 18px;
@@ -158,14 +226,13 @@ const RejectedText = styled.div`
   font-size: 16px;
   font-weight: 400;
   line-height: 22px;
-`
+`;
 
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
   font-size: 16px;
-  color: var(--garyScale-60, #000);
+  color: var(--grayScale-60, #000);
   font-weight: 400;
   line-height: 22px;
   gap: 4px;
