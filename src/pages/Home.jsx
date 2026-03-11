@@ -1,26 +1,13 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import MainImg from '../assets/images/image-main.svg';
 import Login from '../components/home/Login';
 import Logo from '../components/common/Logo';
 import Button from '../components/common/Button';
-import deleteSubjects from '../apis/subjects/deleteSubjects';
 
 const Home = () => {
   const navigate = useNavigate();
-
-  const handleDelete = useCallback(async (id) => {
-    if (!localStorage) {
-      return;
-    }
-
-    try {
-      await deleteSubjects(id);
-    } catch (error) {
-      console.error('10분 만료 자동 삭제 오류', error);
-    }
-  }, []);
 
   useEffect(() => {
     const storageData = localStorage.getItem('subjectId');
@@ -29,23 +16,15 @@ const Home = () => {
 
     const idExpireCheck = async () => {
       try {
-        const { id, expiry } = JSON.parse(storageData);
-        const now = new Date().getTime();
-
-        if (now > expiry) {
-          await handleDelete(id);
-        } else {
-          navigate(`/post/${id}/answer`);
-        }
+        const { id } = JSON.parse(storageData);
+        navigate(`/post/${id}/answer`);
       } catch (error) {
         console.error('Storage data error:', error);
-      } finally {
-        localStorage.removeItem('subjectId');
       }
     };
 
     idExpireCheck();
-  }, [navigate, handleDelete]);
+  }, [navigate]);
 
   return (
     <Container>
