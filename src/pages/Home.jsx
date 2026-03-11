@@ -111,12 +111,15 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 70px;
-  width: 1200px;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 50px;
+
   margin-top: 45px;
   margin-bottom: 25px;
 
   @media (max-width: 768px) {
-    width: 700px;
+    padding: 0 32px;
   }
 
   @media (max-width: 375px) {
@@ -130,10 +133,10 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
   align-items: center;
   width: 100%;
+  margin-right: 0;
 
   @media (max-width: 375px) {
     justify-content: center;
-    margin: 0;
   }
 `;
 
