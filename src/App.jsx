@@ -6,14 +6,13 @@ import QuestionList from './pages/QuestionList';
 import Ranking from './pages/Ranking';
 import Answer from './pages/Answer';
 
-
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/list" element={<QuestionList />} />
       <Route path="/ranking" element={<Ranking />} />
-      <Route path="/answer" element={<Answer />} />
+      <Route path="/post/:id/answer" element={<Answer />} />
     </Routes>
   );
 }
