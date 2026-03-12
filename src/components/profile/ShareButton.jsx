@@ -1,8 +1,25 @@
-import { useEffect, useState, useRef } from "react"; // useRef 추가
+/*
+나중에 src/common/Layout.jsx 상단에
+import ShareButton from '../profile/ShareButton'; 넣어주시구
+Layout에서 <SNSContainer> 부분 img 전부 없애 주시구 <ShareButton> 추가해주세요!
+토스트는 추후 다른 곳에서도 사용 될 염려가 있어 코멘트 참고하여 스타일과 함께 common 폴더에
+컴포넌트 별도로 빼뒀습니다!
+env 카카오 공유 관련 별도로 공유 드리겠습니다!
+
+p.s.
+메인페이지에서 닉네임 치고 답변 페이지로 넘어가는 중에 페이지 렌더링이 안되길레 확인해봤더니
+App.jsx에서 답변 페이지 경로를 라우트에 별도 추가했더니 정상 작동 확인 했습니다!
+import AnswerPage from './pages/AnswerPage'; 추가하구
+<Route path="/post/:id/answer" element={<AnswerPage />} /> 추가해서
+로딩 확인 했구, 공유 버튼 눌러가며 테스트 완료입니다!
+*/
+
+import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import LinkIcon from "../../assets/icons/icon-link.svg";
 import KakaoIcon from "../../assets/icons/icon-kakaotalk.svg";
 import FacebookIcon from "../../assets/icons/icon-facebook.svg";
+import Toast from "../common/Toast"; // 토스트 추가
 
 function ShareButton() {
   const [toast, setToast] = useState(false);
@@ -82,7 +99,7 @@ const handleKakaoShare = () => {
         </Icon>
       </Wrapper>
 
-      <Toast $visible={toast}>URL이 복사되었습니다</Toast>
+      <Toast visible={toast}>URL이 복사되었습니다</Toast>
     </>
   );
 }
@@ -119,28 +136,5 @@ const Icon = styled.button`
 
     /* 노란 배경이면 검정 아이콘 */
     filter: ${(props) => (props.yellow ? "none" : "invert(1)")};
-  }
-`;
-
-const Toast = styled.div`
-  position: fixed;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: black;
-  color: white;
-  padding: 10px 18px;
-  border-radius: 6px;
-  font-size: 14px;
-  max-width: 90vw;
-  text-align: center;
-  opacity: ${(props) => (props.$visible ? 1 : 0)};
-  transition: opacity 0.5s ease;
-  pointer-events: none;
-
-  @media (max-width: 768px) {
-    bottom: 80px;
-    font-size: 13px;
-    padding: 9px 16px;
   }
 `;
