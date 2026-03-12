@@ -5,13 +5,6 @@ Layout에서 <SNSContainer> 부분 img 전부 없애 주시구 <ShareButton> 추
 토스트는 추후 다른 곳에서도 사용 될 염려가 있어 코멘트 참고하여 스타일과 함께 common 폴더에
 컴포넌트 별도로 빼뒀습니다!
 env 카카오 공유 관련 별도로 공유 드리겠습니다!
-
-p.s.
-메인페이지에서 닉네임 치고 답변 페이지로 넘어가는 중에 페이지 렌더링이 안되길레 확인해봤더니
-App.jsx에서 답변 페이지 경로를 라우트에 별도 추가했더니 정상 작동 확인 했습니다!
-import AnswerPage from './pages/AnswerPage'; 추가하구
-<Route path="/post/:id/answer" element={<AnswerPage />} /> 추가해서
-로딩 확인 했구, 공유 버튼 눌러가며 테스트 완료입니다!
 */
 
 import { useEffect, useState, useRef } from "react";
