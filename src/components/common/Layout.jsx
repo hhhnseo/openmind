@@ -4,7 +4,7 @@ import heroImg from '../../assets/images/image-hero.svg';
 import Logo from '../common/Logo';
 import profileImg from '../../assets/images/image-profile.svg';
 
-const Layout = () => {
+const Layout = ({ children }) => {
   const navigate = useNavigate();
 
   return (
@@ -25,7 +25,9 @@ const Layout = () => {
         </ProfileOverlay>
       </BannerSection>
       <MainContent>
-        <QuestionContainer></QuestionContainer>
+        <QuestionContainer>
+          {children}
+        </QuestionContainer>
       </MainContent>
     </Final>
   );
@@ -101,9 +103,7 @@ const MainContent = styled.main`
   }
 `;
 
-//컨테이너 확인용
 const QuestionContainer = styled.div`
   width: 100%;
-  background-color: #f5f1ee;
-  height: 1200px;
+  margin-bottom: 50px;
 `;

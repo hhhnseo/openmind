@@ -1,10 +1,10 @@
-import styled from "styled-components";
-import ProfileImg from "../../assets/images/image-profile.svg";
-import LikeButton from "./LikeButton";
+import styled from 'styled-components';
+import ProfileImg from '../../assets/images/image-profile.svg';
+import LikeButton from './LikeButton';
 import Badge from "./Badge";
 import { useState } from "react";
-import AnswerForm from "../answer/AnswerForm";
-import KebabMenu from "../answer/KebabMenu";
+import AnswerForm from '../answer/AnswerForm';
+import KebabMenu from '../answer/KebabMenu';
 
 export default function FeedCard({
   data,
@@ -48,7 +48,7 @@ export default function FeedCard({
         <Badge $answered={badgeActive} />
         {showMenu && (
           <KebabMenu
-            onEdit={handleEdit}
+            onEdit={isAnswered ? handleEdit : undefined}
             onDelete={handleDelete}
             onReject={handleReject}
           />
@@ -163,6 +163,7 @@ const RejectedText = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%;
   font-size: 16px;
   color: var(--garyScale-60, #000);
   font-weight: 400;

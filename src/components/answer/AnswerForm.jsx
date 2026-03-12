@@ -1,11 +1,12 @@
-import { useState } from "react"
-import styled from "styled-components";
-import InputTextArea from "../common/InputTextArea";
+import { useState } from 'react';
+import styled from 'styled-components';
+import InputTextArea from '../common/InputTextArea';
 
 const AnswerForm = ({ onSubmit, defaultValue = "" }) => {
   const [value, setValue] = useState(defaultValue);
 
   const handleChange = (e) => {
+    
     setValue(e.target.value);
 
     console.log(e.target.value);
@@ -41,7 +42,8 @@ const AnswerForm = ({ onSubmit, defaultValue = "" }) => {
 const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 532px;
+  min-width: 490px;
+  margin: 0 auto;
   gap: 8px;
   font-size: 16px;
   font-style: normal;
