@@ -8,7 +8,7 @@ import RejectIcon from '../../assets/icons/icon-rejection.svg?react';
 export default function KebabMenu({
   onEdit,
   onDelete,
-  onReject
+  onReject,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -29,15 +29,17 @@ export default function KebabMenu({
 
   return (
     <KebabWrapper>
-      <KebabButton onClick={() => setOpen((prev) => !prev)}>
+      <KebabButton
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+      >
         <KebabIcon />
       </KebabButton>
 
       {open && (
         <Dropdown>
-
           {onEdit && (
-            <MenuItem onClick={handleEdit}>
+            <MenuItem type="button" onClick={handleEdit}>
               <Icon>
                 <EditIcon />
               </Icon>
@@ -46,7 +48,7 @@ export default function KebabMenu({
           )}
 
           {onDelete && (
-            <MenuItem onClick={handleDelete}>
+            <MenuItem type="button" onClick={handleDelete}>
               <Icon>
                 <DeleteIcon />
               </Icon>
@@ -55,14 +57,13 @@ export default function KebabMenu({
           )}
 
           {onReject && (
-            <MenuItem onClick={handleReject}>
+            <MenuItem type="button" onClick={handleReject}>
               <Icon>
                 <RejectIcon />
               </Icon>
-              답변거절
+              답변 거절
             </MenuItem>
           )}
-
         </Dropdown>
       )}
     </KebabWrapper>
@@ -78,46 +79,43 @@ const KebabButton = styled.button`
   border: none;
   background: none;
   font-size: 20px;
+  cursor: pointer;
 `;
 
 const Dropdown = styled.div`
   position: absolute;
   top: 28px;
-  left: 0;
-  width: 103px;
+  right: 0;
+  width: 120px;
   padding: 4px 0;
-
   background: var(--grayScale-10, #fff);
-  border: 1px solid var(--grayScale-30, #CFCFCF);
+  border: 1px solid var(--grayScale-30, #cfcfcf);
   border-radius: 8px;
-
   box-shadow: var(--shadow-1pt);
+  z-index: 10;
 `;
 
 const MenuItem = styled.button`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 8px;
-
   width: 100%;
   padding: 8px 12px;
   border: none;
   background: var(--grayScale-10, #fff);
-
   font-size: 14px;
   font-weight: 500;
   line-height: 18px;
   color: var(--grayScale-50, #515151);
-
   cursor: pointer;
 
   &:hover {
-    background: var(--grayScale-20, #F9F9F9);
-    color: var(--blue-50, #1877F2);
+    background: var(--grayScale-20, #f9f9f9);
+    color: var(--blue-50, #1877f2);
 
     svg {
-      color: var(--blue-50, #1877F2);
+      color: var(--blue-50, #1877f2);
     }
   }
 `;

@@ -1,40 +1,40 @@
 import styled from 'styled-components';
 import ProfileImg from '../../assets/images/image-profile.svg';
 import LikeButton from './LikeButton';
-import Badge from "./Badge";
-import { useState } from "react";
+import Badge from './Badge';
+import { useState } from 'react';
 import AnswerForm from '../answer/AnswerForm';
 import KebabMenu from '../answer/KebabMenu';
 import postAnswer from '../../apis/answers/postAnswer';
+import patchAnswer from '../../apis/answers/patchAnswer';
 import deleteQuestion from '../../apis/questions/deleteQuestion';
-import deleteAnswer from '../../apis/answers/deleteAnswer';
 
 export default function FeedCard({
   data,
   showMenu = true,
   showAnswerForm = true,
-  onDelete
+  onDelete,
 }) {
-  
   const [editMode, setEditMode] = useState(false);
+  const [answer, setAnswer] = useState(data?.answer ?? null);
 
-  const answer = data.answers?.[0];
+  const isRejected = answer?.isRejected === true;
+  const hasAnswer = !!answer && !isRejected;
 
-  const isRejected = answer?.isRejected;
-  const isAnswered = answer && !isRejected;
-
-  let status = "none";
-
+  let status = 'none';
   if (answer) {
-    status = answer.isRejected ? "rejected" : "answered";
+    status = isRejected ? 'rejected' : 'answered';
   }
 
-  const answerContent = answer?.content || "";
+  const answerContent = answer?.content ?? '';
 
   const formatDate = (dateString) => {
-    const now = new Date();
-    const created = new Date(dateString);
+    if (!dateString) return '';
 
+    const created = new Date(dateString);
+    if (Number.isNaN(created.getTime())) return '';
+
+    const now = new Date();
     const diff = now - created;
 
     const minutes = Math.floor(diff / (1000 * 60));
@@ -43,11 +43,11 @@ export default function FeedCard({
     const weeks = Math.floor(days / 7);
     const months = Math.floor(days / 30);
 
-    if (minutes < 1) return "방금 전";
+    if (minutes < 1) return '방금 전';
     if (minutes < 60) return `${minutes}분 전`;
     if (hours < 24) return `${hours}시간 전`;
-    if (days === 1) return "어제";
-    if (days < 7) return `${days}일 전`
+    if (days === 1) return '어제';
+    if (days < 7) return `${days}일 전`;
     if (weeks < 5) return `${weeks}주 전`;
     return `${months}개월 전`;
   };
@@ -67,13 +67,15 @@ export default function FeedCard({
 
   const handleReject = async () => {
     try {
+      if (!answer?.id) return;
 
-      if (answer?.id) {
-        await deleteAnswer(answer.id);
-      }
+      const response = await patchAnswer(answer.id, {
+        content: answer.content,
+        isRejected: true,
+      });
 
-      window.location.reload();
-
+      setAnswer(response);
+      setEditMode(false);
     } catch (error) {
       console.error(error);
     }
@@ -81,54 +83,60 @@ export default function FeedCard({
 
   const handleSubmitAnswer = async (text) => {
     try {
-
+      // 기존 답변이 있으면 수정
       if (answer?.id) {
-        await deleteAnswer(answer.id);
+        const response = await patchAnswer(answer.id, {
+          content: text,
+          isRejected: false,
+        });
+
+        setAnswer(response);
+        setEditMode(false);
+        return;
       }
 
-      await postAnswer(data.id, text);
+      // 기존 답변이 없으면 새로 생성
+      const response = await postAnswer(data.id, text, false);
 
-      window.location.reload();
-
+      setAnswer(response);
+      setEditMode(false);
     } catch (error) {
       console.error(error);
+      throw error;
     }
   };
 
   return (
     <Container>
-
       <Header>
         <Badge $status={status} />
 
         {showMenu && (
           <KebabMenu
-            onEdit={answer ? handleEdit : undefined}
+            onEdit={hasAnswer ? handleEdit : undefined}
             onDelete={handleDelete}
-            onReject={answer ? handleReject : undefined}
+            onReject={handleReject}
           />
         )}
-
       </Header>
 
       <Question>
         <QuestionDate>
-          질문 • {data.createdAt ? formatDate(data.createdAt) : ""}
+          질문 • {formatDate(data.createdAt)}
         </QuestionDate>
         {data.content}
       </Question>
 
       <Form>
-        <Profile src={ProfileImg} />
+        <Profile src={ProfileImg} alt="프로필 이미지" />
 
         <Content>
-
           <UserInfo>
-            <Nickname>{data.author || "아초는 고양이"}</Nickname>
-            <Date>{data.createdAt ? formatDate(data.createdAt) : ""}</Date>
+            <Nickname>{data.author || '아초는 고양이'}</Nickname>
+            <CreatedDateText>{formatDate(data.createdAt)}</CreatedDateText>
           </UserInfo>
 
-          {showAnswerForm && (editMode || !isAnswered) ? (
+          {showAnswerForm && (editMode || !answer) ? (
             <AnswerForm
               type="answer"
               defaultValue={answerContent}
@@ -136,12 +144,10 @@ export default function FeedCard({
             />
           ) : isRejected ? (
             <RejectedText>답변 거절</RejectedText>
-          ) : (
-            isAnswered && <AnswerText>{answerContent}</AnswerText>
-          )}
-
+          ) : hasAnswer ? (
+            <AnswerText>{answerContent}</AnswerText>
+          ) : null}
         </Content>
-
       </Form>
 
       <Footer>
@@ -151,9 +157,8 @@ export default function FeedCard({
           initialDislike={data.dislike}
         />
       </Footer>
-
     </Container>
-  )
+  );
 }
 
 const Container = styled.div`
@@ -200,7 +205,7 @@ const Nickname = styled.span`
   line-height: 24px;
 `;
 
-const Date = styled.span`
+const CreatedDateText = styled.span`
   color: var(--grayScale-40, #818181);
   font-size: 14px;
   font-weight: 500;
@@ -222,7 +227,7 @@ const QuestionDate = styled.span`
 `;
 
 const RejectedText = styled.div`
-  color: var(--red-50, #B93333);
+  color: var(--red-50, #b93333);
   font-size: 16px;
   font-weight: 400;
   line-height: 22px;

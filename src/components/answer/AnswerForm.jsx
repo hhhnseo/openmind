@@ -1,26 +1,38 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import InputTextArea from '../common/InputTextArea';
 
 const AnswerForm = ({
   onSubmit,
-  defaultValue = "",
-  type = "answer",
+  defaultValue = '',
+  type = 'answer',
 }) => {
   const [text, setText] = useState(defaultValue);
+  const [loading, setLoading] = useState(false);
 
-  const isQuestion = type === "question";
+  useEffect(() => {
+    setText(defaultValue);
+  }, [defaultValue]);
 
-  const placeholder = `${isQuestion ? "질문" : "답변"}을 입력해주세요`;
-  const buttonText = isQuestion ? "질문 보내기" : "답변 완료";
+  const isQuestion = type === 'question';
+  const placeholder = `${isQuestion ? '질문' : '답변'}을 입력해주세요`;
+  const buttonText = isQuestion ? '질문 보내기' : '답변 완료';
+  const isDisabled = !text.trim() || loading;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!text.trim()) return;
+    if (isDisabled) return;
 
-    onSubmit?.(text);
-    setText("");
+    try {
+      setLoading(true);
+      await onSubmit?.(text);
+      setText('');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,14 +43,14 @@ const AnswerForm = ({
         placeholder={placeholder}
       />
 
-      <SubmitButton type="submit">
-        {buttonText}
+      <SubmitButton type="submit" disabled={isDisabled}>
+        {loading ? '처리 중...' : buttonText}
       </SubmitButton>
     </FormContainer>
-  )
-}
+  );
+};
 
-const FormContainer = styled.div`
+const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   min-width: 490px;
@@ -60,11 +72,11 @@ const SubmitButton = styled.button`
   gap: 8px;
   align-self: stretch;
   border-radius: 8px;
+  border: none;
   background: ${({ disabled }) =>
-    disabled ? "var(--brown-30)" : "var(--brown-40)"};
+    disabled ? 'var(--brown-30)' : 'var(--brown-40)'};
   color: var(--grayScale-10);
-  cursor: ${({ disabled }) =>
-    disabled ? "default" : "pointer"};
+  cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
 `;
 
 export default AnswerForm;

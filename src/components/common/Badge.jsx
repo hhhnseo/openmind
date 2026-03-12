@@ -10,12 +10,12 @@ const Badge = styled.div`
   background: var(--Grayscale-10, #FFF);
   border: 1px solid
     ${({ $status }) => {
-      if ($status === "rejected") return "var(--grayScale-40)";
+      if ($status === "rejected") return "var(--brown-40)";
       if ($status === "answered") return "var(--brown-40)";
       return "var(--grayScale-40)";
     }};
   color: ${({ $status }) => {
-    if ($status === "rejected") return "var(--grayScale-40)";
+    if ($status === "rejected") return "var(--brown-40)";
     if ($status === "answered") return "var(--brown-40)";
     return "var(--grayScale-40)";
   }};
@@ -28,7 +28,7 @@ const Badge = styled.div`
 
   &::before {
     content: "${({ $status }) => {
-      if ($status === "rejected") return "답변 거절";
+      if ($status === "rejected") return "답변 완료";
       if ($status === "answered") return "답변 완료";
       return "미답변";
     }}";

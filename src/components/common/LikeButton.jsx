@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import ThumbUp from "../../assets/icons/icon-thumbs-up.svg?react";
 import ThumbDown from "../../assets/icons/icon-thumbs-down.svg?react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { postReaction } from "../../apis/questions/postReaction";
 
 export default function LikeButton({
@@ -9,13 +9,24 @@ export default function LikeButton({
   initialLike = 0,
   initialDislike = 0
 }) {
+  const storageKey = `reaction-${questionId}`;
+
   const [likeCount, setLikeCount] = useState(initialLike);
   const [dislikeCount, setDislikeCount] = useState(initialDislike);
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(null); // null | "like" | "dislike"
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const savedReaction = localStorage.getItem(storageKey);
+
+    if (savedReaction === "like" || savedReaction === "dislike") {
+      setSelected(savedReaction);
+    }
+  }, [storageKey]);
+
   const handleLike = async () => {
-    if (loading || selected === "like") return;
+    
+    if (loading || selected !== null) return;
 
     try {
       setLoading(true);
@@ -24,7 +35,7 @@ export default function LikeButton({
 
       setLikeCount((prev) => prev + 1);
       setSelected("like");
-
+      localStorage.setItem(storageKey, "like");
     } catch (error) {
       console.error(error);
     } finally {
@@ -33,7 +44,8 @@ export default function LikeButton({
   };
 
   const handleDislike = async () => {
-    if (loading || selected === "dislike") return;
+    
+    if (loading || selected !== null) return;
 
     try {
       setLoading(true);
@@ -42,7 +54,7 @@ export default function LikeButton({
 
       setDislikeCount((prev) => prev + 1);
       setSelected("dislike");
-
+      localStorage.setItem(storageKey, "dislike");
     } catch (error) {
       console.error(error);
     } finally {
@@ -55,6 +67,7 @@ export default function LikeButton({
       <Button
         onClick={handleLike}
         $active={selected === "like"}
+        disabled={loading || selected !== null}
       >
         <Icon>
           <ThumbUp />
@@ -65,6 +78,7 @@ export default function LikeButton({
       <DislikeButton
         onClick={handleDislike}
         $active={selected === "dislike"}
+        disabled={loading || selected !== null}
       >
         <Icon>
           <ThumbDown />
@@ -93,7 +107,7 @@ const Button = styled.button`
     width: 16px;
     height: 16px;
   }
-  
+
   ${({ $active }) =>
     $active &&
     `
@@ -103,9 +117,13 @@ const Button = styled.button`
       }
     `}
 
+  &:disabled {
+    cursor: default;
+  }
+
   &:hover {
-    ${({ $active }) =>
-      !$active &&
+    ${({ $active, disabled }) =>
+      !$active && !disabled &&
       `
         color: var(--grayScale-60);
         svg {
@@ -115,27 +133,7 @@ const Button = styled.button`
   }
 `;
 
-const DislikeButton = styled(Button)`
-  ${({ $active }) =>
-    $active &&
-    `
-      color: var(--blue-50);
-      svg {
-        color: var(--blue-50);
-      }
-    `}
-
-  &:hover {
-    ${({ $active }) =>
-      !$active &&
-      `
-        color: var(--grayScale-60);
-        svg {
-          color: var(--grayScale-60);
-        }
-      `}
-  }
-`;
+const DislikeButton = styled(Button)``;
 
 const Icon = styled.span`
   display: flex;
