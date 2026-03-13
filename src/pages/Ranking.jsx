@@ -41,8 +41,6 @@ function Ranking() {
     .sort((a, b) => b.like - b.dislike - (a.like - a.dislike))
     .slice(0, 3);
 
-  console.log(userSort);
-
   return (
     <Container>
       <Inner>
