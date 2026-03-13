@@ -35,7 +35,7 @@ function QuestionList() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [subjects, setSubjects] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [pageSize, setPageSize] = useState(
     window.innerWidth <= TABLET ? MOBILE_PAGE_SIZE : DESKTOP_PAGE_SIZE
@@ -86,34 +86,22 @@ function QuestionList() {
   }
 
   useEffect(() => {
-    let cancelled = false;
-
     const loadSubjects = async () => {
       setLoading(true);
       setError(null);
 
       try {
         const subjectsData = await fetchAllSubjectsData();
-
-        if (cancelled) return;
         setSubjects(subjectsData);
       } catch (error) {
-        if (cancelled) return;
-
         console.error('질문 목록 데이터를 불러오지 못했습니다.', error);
         setError('질문 목록을 불러오지 못했습니다.');
       } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
+        setLoading(false);
       }
     };
 
     loadSubjects();
-
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   function compareByName(a, b) {
