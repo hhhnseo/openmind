@@ -1,22 +1,80 @@
 import styled, { css } from 'styled-components';
 
-const MOBILE = '768px';
+const MOBILE = 767;
+const DEFAULT_PAGE_SIZE = 8;
 
 const SIZE = {
   large: css`
-    --box: 40px;
-    --font: 20px;
+    --page-box-size: 40px;
+    --page-font-size: 20px;
   `,
   small: css`
-    --box: 30px;
-    --font: 16px;
+    --page-box-size: 30px;
+    --page-font-size: 16px;
   `,
 };
 
-const PAGES = [1, 2, 3, 4, 5];
-const ACTIVE_PAGE = 4;
+function getPageItems(totalPages, currentPage) {
+  if (totalPages <= 5) {
+    return range(1, totalPages);
+  }
 
-function Pagination({ size = 'large', responsive = false }) {
+  if (currentPage <= 3) {
+    return [1, 2, 3, 4, 'ellipsis', totalPages];
+  }
+
+  if (currentPage >= totalPages - 2) {
+    return [1, 'ellipsis', ...range(totalPages - 3, totalPages)];
+  }
+
+  return [
+    1,
+    'ellipsis',
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    'ellipsis',
+    totalPages,
+  ];
+}
+
+function range(start, end) {
+  const result = [];
+
+  for (let i = start; i <= end; i += 1) {
+    result.push(i);
+  }
+
+  return result;
+}
+
+function Pagination({
+  size = 'large',
+  responsive = false,
+  totalCount = 0,
+  pageSize = DEFAULT_PAGE_SIZE,
+  currentPage = 1,
+  onPageChange,
+}) {
+  if (pageSize <= 0) return null;
+  const totalPages = Math.ceil(totalCount / pageSize);
+
+  if (totalPages <= 1) return null;
+
+  const pages = getPageItems(totalPages, currentPage);
+
+  const handlePrevPage = () => {
+    if (onPageChange && currentPage > 1) {
+      onPageChange(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (onPageChange && currentPage < totalPages) {
+      onPageChange(currentPage + 1);
+    }
+  };
+
   return (
     <PaginationWrap
       $size={size}
@@ -24,31 +82,50 @@ function Pagination({ size = 'large', responsive = false }) {
       aria-label="페이지네이션"
     >
       <PageNavArrowBox>
-        <PageNavArrow type="button" aria-label="이전 페이지">
+        <PageNavArrow
+          type="button"
+          aria-label="이전 페이지"
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+        >
           {'<'}
         </PageNavArrow>
       </PageNavArrowBox>
 
       <PageNavList>
-        {PAGES.map((page) => {
-          const isActive = page === ACTIVE_PAGE;
+        {pages.map((item, index) => {
+          if (item === 'ellipsis') {
+            return (
+              <PageNavItem key={`ellipsis-${index}`}>
+                <Ellipsis>...</Ellipsis>
+              </PageNavItem>
+            );
+          }
+
+          const isActive = item === currentPage;
 
           return (
-            <PageNavItem key={page}>
-              <PageNavLink
+            <PageNavItem key={item}>
+              <PageNav
                 type="button"
                 $active={isActive}
                 aria-current={isActive ? 'page' : undefined}
+                onClick={() => onPageChange?.(item)}
               >
-                {page}
-              </PageNavLink>
+                {item}
+              </PageNav>
             </PageNavItem>
           );
         })}
       </PageNavList>
 
       <PageNavArrowBox>
-        <PageNavArrow type="button" aria-label="다음 페이지">
+        <PageNavArrow
+          type="button"
+          aria-label="다음 페이지"
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+        >
           {'>'}
         </PageNavArrow>
       </PageNavArrowBox>
@@ -58,7 +135,7 @@ function Pagination({ size = 'large', responsive = false }) {
 
 export default Pagination;
 
-const PaginationWrap = styled.div`
+const PaginationWrap = styled.nav`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -68,7 +145,7 @@ const PaginationWrap = styled.div`
   ${({ $responsive }) =>
     $responsive &&
     css`
-      @media (max-width: ${MOBILE}) {
+      @media (max-width: ${MOBILE}px) {
         ${SIZE.small}
       }
     `}
@@ -78,18 +155,21 @@ const PageNavArrowBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  width: var(--box);
-  height: var(--box);
+  width: var(--page-box-size);
+  height: var(--page-box-size);
 `;
 
 const PageNavArrow = styled.button`
   width: 100%;
   height: 100%;
-
-  font-size: var(--font);
+  font-size: var(--page-font-size);
   font-family: Actor, sans-serif;
   color: var(--grayScale-40);
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
 `;
 
 const PageNavList = styled.ol`
@@ -100,21 +180,22 @@ const PageNavItem = styled.li`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  width: var(--box);
-  height: var(--box);
+  width: var(--page-box-size);
+  height: var(--page-box-size);
 `;
 
-const PageNavLink = styled.button`
+const PageNav = styled.button`
   padding: 3px 6px;
-  width: auto;
-  height: auto;
-
-  font-size: var(--font);
+  font-size: var(--page-font-size);
   font-family: Actor, sans-serif;
-
+  font-weight: ${({ $active }) => ($active ? 500 : 400)};
   color: ${({ $active }) =>
     $active ? 'var(--brown-40)' : 'var(--grayScale-40)'};
+`;
 
-  font-weight: ${({ $active }) => ($active ? 500 : 400)};
+const Ellipsis = styled.span`
+  font-size: var(--page-font-size);
+  font-family: Actor, sans-serif;
+  line-height: 1;
+  color: var(--grayScale-40);
 `;

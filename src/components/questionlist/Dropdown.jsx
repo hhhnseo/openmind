@@ -2,28 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ArrowDownIcon from '../../assets/icons/icon-arrow-down.svg?react';
 
-function Dropdown({
-  options = [
-    { label: '이름순', value: 'name' },
-    { label: '최신순', value: 'recent' },
-  ],
-  value = 'name',
-  onChange,
-}) {
+const OPTIONS = [
+  { value: 'recent', label: '최신순' },
+  { value: 'name', label: '이름순' },
+];
+
+function SortDropdown({ value = 'recent', onChange }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   const selectedOption =
-    options.find((option) => option.value === value) ?? options[0];
-
-  const handleToggle = () => {
-    setIsOpen((prev) => !prev);
-  };
-
-  const handleSelect = (optionValue) => {
-    onChange?.(optionValue);
-    setIsOpen(false);
-  };
+    OPTIONS.find((option) => option.value === value) ?? OPTIONS[0];
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -38,6 +27,17 @@ function Dropdown({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const handleToggle = () => {
+    setIsOpen((prev) => !prev);
+  };
+
+  const handleSelect = (nextValue) => {
+    if (nextValue !== value) {
+      onChange?.(nextValue);
+    }
+    setIsOpen(false);
+  };
 
   return (
     <DropdownContainer ref={dropdownRef}>
@@ -57,11 +57,10 @@ function Dropdown({
 
       {isOpen && (
         <DropdownMenu role="listbox">
-          {options.map((option) => (
-            <DropdownOption>
+          {OPTIONS.map((option) => (
+            <DropdownOption key={option.value}>
               <DropdownOptionButton
                 type="button"
-                key={option.value}
                 role="option"
                 aria-selected={value === option.value}
                 $selected={value === option.value}
@@ -77,11 +76,12 @@ function Dropdown({
   );
 }
 
-export default Dropdown;
+export default SortDropdown;
 
 const DropdownContainer = styled.div`
+  z-index: 1;
   position: relative;
-  width: 80px;
+  min-width: 80px;
   height: 34px;
 `;
 
@@ -124,7 +124,6 @@ const ArrowIcon = styled.span`
   svg {
     width: 100%;
     height: 100%;
-
     transform: ${({ $isOpen }) =>
       $isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
     transition: transform 0.2s ease-in-out;
@@ -133,12 +132,10 @@ const ArrowIcon = styled.span`
 
 const DropdownMenu = styled.ul`
   position: absolute;
-  top: 38px;
+  top: calc(100% + 4px);
   left: 0;
-
   padding: 4px 0;
   width: 100%;
-
   background-color: var(--grayScale-10);
   border: 1px solid var(--grayScale-30);
   border-radius: 8px;
