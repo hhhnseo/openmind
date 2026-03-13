@@ -1,43 +1,16 @@
 import Layout from '../components/common/Layout';
 import CardFrame from '../components/common/CardFrame';
-import { useState } from 'react';
 import styled from 'styled-components';
+import { useState } from 'react';
 
 export default function Answer() {
 
-  // MockData
-  const [questions, setQuestions] = useState([
-    {
-    id: 1,
-    question: "좋아하는 음식은?",
-    author: "아초는 고양이",
-    date: "2주전",
-    answers: []
-  },
-  {
-    id: 2,
-    question: "좋아하는 음식은?",
-    author: "아초는 고양이",
-    date: "1주전",
-    answers: [
-      {
-        content: "아무래도 치킨이죠"
-      }
-    ]
-  },
-  {
-    id: 3,
-    question: "좋아하는 음식은?",
-    author: "아초는 고양이",
-    date: "3일전",
-    answers: []
-  }
-  ]);
+  const [deleteSignal, setDeleteSignal] = useState(0);
 
   const handleDeleteAll = () => {
     const confirmed = window.confirm("삭제하시겠습니까?");
     if (confirmed) {
-      setQuestions([]);
+      setDeleteSignal((prev) => prev + 1);
     }
   };
 
@@ -45,17 +18,15 @@ export default function Answer() {
     <Layout>
 
       <AnswerContainer>
-        {questions.length > 0 && (
-          <DeleteButton onClick={handleDeleteAll}>
+        <DeleteButton onClick={handleDeleteAll}>
           삭제하기
         </DeleteButton>
-        )}
       </AnswerContainer>
 
       <CardFrame
-        questions={questions}
         showMenu={true}
         showAnswerForm={true}
+        deleteSignal={deleteSignal}
       />
     </Layout>
   )
