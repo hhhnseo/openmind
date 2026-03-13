@@ -6,7 +6,7 @@ import LikeButton from '../components/common/LikeButton';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import getAllSubjects from '../apis/subjects/getAllSubjects';
-import getAllSubjectsQuestion from '../apis/subjects/getAllSubjectsQuestion';
+import getAllSubjectsQuestion from '../apis/subjects/getQuestion';
 
 function Ranking() {
   const [bestUser, setBestUser] = useState([]);
