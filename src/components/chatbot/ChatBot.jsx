@@ -185,8 +185,6 @@ const Chatbot = () => {
   );
 };
 
-// --- Styled Components ---
-
 const FloatingWrapper = styled.div`
   position: fixed;
   bottom: 20px;
