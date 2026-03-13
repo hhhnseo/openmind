@@ -6,7 +6,7 @@ import LikeButton from '../components/common/LikeButton';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import getAllSubjects from '../apis/subjects/getAllSubjects';
-import getAllSubjectsQuestion from '../apis/subjects/getQuestion';
+import getQuestion from '../apis/subjects/getQuestion';
 
 function Ranking() {
   const [bestUser, setBestUser] = useState([]);
@@ -15,16 +15,16 @@ function Ranking() {
   useEffect(() => {
     //답변자 순위
     const getUser = async () => {
-      const response = await getAllSubjects({});
+      const response = await getAllSubjects({ limit: 10000, offset: 0 });
       setBestUser(response.results);
     };
     getUser();
 
     //질문 순위
     const getList = async () => {
-      const response = await getAllSubjects({});
+      const response = await getAllSubjects({ limit: 10000, offset: 0 });
       const idList = response.results.map((item) => item.id);
-      const requests = idList.map((id) => getAllSubjectsQuestion(id));
+      const requests = idList.map((id) => getQuestion(id));
       const responses = await Promise.all(requests);
       const allQuestions = responses.flatMap((res) => res.results);
       setBestList(allQuestions);
@@ -40,57 +40,55 @@ function Ranking() {
   const listSort = [...bestList]
     .sort((a, b) => b.like - b.dislike - (a.like - a.dislike))
     .slice(0, 3);
-
+  console.log(bestList);
   return (
     <Container>
-      <Inner>
-        <Header>
-          <Link to="/list">
-            <Logo size="small" />
-          </Link>
-          <Link to="/list">
-            <Button $variant="outline" children="질문하러 가기" />
-          </Link>
-        </Header>
-        <RankingWrap>
-          <div>
-            <Title>인기 답변자 순위</Title>
-            <BestUser>
-              {userSort.map((item) => (
-                <UserCard
-                  key={item.id}
-                  id={item.id}
-                  name={item.name}
-                  profileSrc={item.imageSource}
-                  count={item.questionCount}
-                />
-              ))}
-            </BestUser>
-          </div>
+      <Header>
+        <Link to="/list">
+          <Logo size="small" />
+        </Link>
+        <Link to="/list">
+          <Button $variant="outline" children="질문하러 가기" />
+        </Link>
+      </Header>
+      <RankingWrap>
+        <div>
+          <Title>인기 답변자 순위</Title>
+          <BestUser>
+            {userSort.map((item) => (
+              <UserCard
+                key={item.id}
+                id={item.id}
+                name={item.name}
+                profileSrc={item.imageSource}
+                count={item.questionCount}
+              />
+            ))}
+          </BestUser>
+        </div>
 
-          <div>
-            <Title>인기 질문 순위</Title>
-            <BestCard>
-              {listSort.map((item, ranking) => (
-                <QuestionList key={item.id}>
-                  <Link to={`/post/${item.id}/answer`}>
-                    <div>
-                      <ItemNum>BEST {ranking + 1}</ItemNum>
-                      <ItemContent>{item.content}</ItemContent>
-                    </div>
-                    <Count>
-                      <LikeButton
-                        likeCounts={item.like}
-                        dislikeCounts={item.dislike}
-                      />
-                    </Count>
-                  </Link>
-                </QuestionList>
-              ))}
-            </BestCard>
-          </div>
-        </RankingWrap>
-      </Inner>
+        <div>
+          <Title>인기 질문 순위</Title>
+          <BestCard>
+            {listSort.map((item, ranking) => (
+              <QuestionList key={item.id}>
+                <Link to={`/post/${item.id}/answer`}>
+                  <div>
+                    <ItemNum>BEST {ranking + 1}</ItemNum>
+                    <ItemContent>{item.content}</ItemContent>
+                  </div>
+                  <Count>
+                    <LikeButton
+                      likeCounts={item.like}
+                      dislikeCounts={item.dislike}
+                    />
+                  </Count>
+                </Link>
+              </QuestionList>
+            ))}
+          </BestCard>
+        </div>
+      </RankingWrap>
     </Container>
   );
 }
@@ -98,14 +96,6 @@ function Ranking() {
 export default Ranking;
 
 const Container = styled.div`
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Inner = styled.div`
   max-width: 934px;
   width: 100%;
   margin: 0 auto;
