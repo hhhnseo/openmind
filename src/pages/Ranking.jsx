@@ -40,7 +40,6 @@ function Ranking() {
   const listSort = [...bestList]
     .sort((a, b) => b.like - b.dislike - (a.like - a.dislike))
     .slice(0, 3);
-  console.log(bestList);
   return (
     <Container>
       <Header>
