@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Logo from '../components/common/Logo';
 import Button from '../components/common/Button';
 import SortDropdown from '../components/questionlist/Dropdown';
@@ -10,6 +10,8 @@ import getAllSubjects from '../apis/subjects/getAllSubjects';
 
 const TABLET = 949;
 const MOBILE = 767;
+const MOBILE_PAGE_SIZE = 6;
+const DESKTOP_PAGE_SIZE = 8;
 const DEFAULT_SORT = 'recent';
 
 function getValidPage(value) {
@@ -17,25 +19,47 @@ function getValidPage(value) {
   return Number.isNaN(page) || page < 1 ? 1 : page;
 }
 
+function getStoredSubjectId() {
+  try {
+    const storedSubject = localStorage.getItem('subjectId');
+    if (!storedSubject) return null;
+
+    const parsedSubject = JSON.parse(storedSubject);
+    return parsedSubject.id ?? null;
+  } catch {
+    return null;
+  }
+}
+
 function QuestionList() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [pageSize, setPageSize] = useState(window.innerWidth <= TABLET ? 6 : 8);
+  const [pageSize, setPageSize] = useState(
+    window.innerWidth <= TABLET ? MOBILE_PAGE_SIZE : DESKTOP_PAGE_SIZE
+  );
+
   const currentPage = getValidPage(searchParams.get('page'));
   const sort = searchParams.get('sort') || DEFAULT_SORT;
   const totalCount = subjects.length;
 
-  const MOBILE_PAGE_SIZE = 6;
-  const DESKTOP_PAGE_SIZE = 8;
+  const subjectId = getStoredSubjectId();
+  const hasSubjectId = Boolean(subjectId);
+  const logoPath = hasSubjectId ? '/list' : '/';
+  const answerPath = hasSubjectId ? `/post/${subjectId}/answer` : '/';
+
   useEffect(() => {
     const mediaQuery = window.matchMedia(`(max-width: ${TABLET}px)`);
+
     const handleBreakpointChange = (event) => {
       setPageSize(event.matches ? MOBILE_PAGE_SIZE : DESKTOP_PAGE_SIZE);
     };
+
     handleBreakpointChange(mediaQuery);
     mediaQuery.addEventListener('change', handleBreakpointChange);
+
     return () => {
       mediaQuery.removeEventListener('change', handleBreakpointChange);
     };
@@ -69,18 +93,19 @@ function QuestionList() {
       setError(null);
 
       try {
-        const subjects = await fetchAllSubjectsData();
+        const subjectsData = await fetchAllSubjectsData();
 
         if (cancelled) return;
-        setSubjects(subjects);
+        setSubjects(subjectsData);
       } catch (error) {
         if (cancelled) return;
 
         console.error('질문 목록 데이터를 불러오지 못했습니다.', error);
         setError('질문 목록을 불러오지 못했습니다.');
       } finally {
-        if (cancelled) return;
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
@@ -151,12 +176,17 @@ function QuestionList() {
     });
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('subjectId');
+    navigate('/');
+  };
+
   return (
     <Page>
       <Inner>
         <HeaderSection>
           <LogoArea>
-            <LogoLink to="/list">
+            <LogoLink to={logoPath}>
               <Logo size="small" />
             </LogoLink>
           </LogoArea>
@@ -164,7 +194,7 @@ function QuestionList() {
             <Button as={Link} to="/ranking" variant="outline">
               랭킹보러 가기
             </Button>
-            <Button as={Link} to="/answer" variant="outline">
+            <Button as={Link} to={answerPath} variant="outline">
               답변하러 가기
             </Button>
           </ButtonArea>
@@ -185,6 +215,7 @@ function QuestionList() {
                   name={subject.name}
                   count={subject.questionCount}
                   profileSrc={subject.imageSource}
+                  hasSubjectId={hasSubjectId}
                   responsive
                 />
               ))}
@@ -199,11 +230,13 @@ function QuestionList() {
               responsive
             />
           )}
-          <LogoutButtonArea>
-            <Button as={Link} to="/answer" variant="outline">
-              로그아웃
-            </Button>
-          </LogoutButtonArea>
+          {hasSubjectId && (
+            <LogoutButtonArea>
+              <Button as={Link} to="/" variant="outline" onClick={handleLogout}>
+                로그아웃
+              </Button>
+            </LogoutButtonArea>
+          )}
         </ContentSection>
       </Inner>
     </Page>

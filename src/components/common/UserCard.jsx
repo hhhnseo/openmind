@@ -34,11 +34,13 @@ function UserCard({
   name = '아초는고양이',
   count = 1,
   profileSrc = profileImage,
+  hasSubjectId = false,
 }) {
+  const cardPath = hasSubjectId ? `/post/${id}/answer` : `/post/${id}`;
   return (
     <ProfileCard $size={size} $responsive={responsive}>
       <CardLink
-        to={`/post/${id}/answer`}
+        to={cardPath}
         aria-label={`${name}님의 질문 답변 페이지로 이동`}
       >
         <ProfileBox>
