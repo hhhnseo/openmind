@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import MessagesIcon from '../../assets/icons/icon-messages.svg?react';
 import profileImage from '../../assets/images/image-profile.svg';
 
-const MOBILE = '768px';
+const MOBILE = 767;
 
 const SIZE = {
   large: css`
@@ -30,9 +30,9 @@ const SIZE = {
 function UserCard({
   size = 'large',
   responsive = false,
-  id = 1,
+  id,
   name = '아초는고양이',
-  count = 9,
+  count = 1,
   profileSrc = profileImage,
 }) {
   return (
@@ -69,29 +69,31 @@ const ProfileCard = styled.div`
   ${({ $responsive }) =>
     $responsive &&
     css`
-      @media (max-width: ${MOBILE}) {
+      @media (max-width: ${MOBILE}px) {
         ${SIZE.small}
       }
     `}
 
   width: 100%;
-  min-width: 155px;
   height: var(--card-height);
   overflow: hidden;
-
   border: 1px solid var(--grayScale-40);
   border-radius: 16px;
+  transition: border 0.3s ease-in-out;
+
+  &:hover {
+    border-color: var(--grayScale-60);
+  }
 `;
 
 const CardLink = styled(Link)`
   padding: var(--padding);
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
   width: 100%;
   height: 100%;
+  background-color: var(--grayScale-10);
 `;
 
 const ProfileBox = styled.div`
@@ -103,19 +105,15 @@ const ProfileBox = styled.div`
 const ProfileImage = styled.img`
   width: var(--image);
   height: var(--image);
-
   object-fit: cover;
   border-radius: 50%;
-
   background-color: var(--grayScale-30);
 `;
 
 const ProfileName = styled.span`
   font-size: var(--name-font);
   line-height: 1.25;
-
   color: var(--grayScale-60);
-
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
@@ -132,14 +130,12 @@ const QuestionLabel = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-
   font-size: var(--label-font);
   color: var(--grayScale-40);
 
   svg {
     width: var(--icon);
     height: var(--icon);
-
     path {
       fill: var(--grayScale-40);
     }
