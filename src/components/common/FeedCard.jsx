@@ -235,6 +235,7 @@ const RejectedText = styled.div`
 
 const Content = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: column;
   font-size: 16px;
   color: var(--grayScale-60, #000);

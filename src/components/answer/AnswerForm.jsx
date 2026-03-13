@@ -52,19 +52,13 @@ const AnswerForm = ({
 
 const FormContainer = styled.form`
   width: 100%;
-  min-width: 490px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
-  line-height: 22px;
-  
-  @media (max-width: 375px) {
-    width: 100%;
-    min-width: 100px;
-  }
+  line-height: 22px;  
 `;
 
 const SubmitButton = styled.button`
