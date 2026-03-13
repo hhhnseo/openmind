@@ -34,15 +34,16 @@ function UserCard({
   name = '아초는고양이',
   count = 1,
   profileSrc = profileImage,
-  hasSubjectId = false,
+  currentSubjectId = null,
 }) {
-  const cardPath = hasSubjectId ? `/post/${id}/answer` : `/post/${id}`;
+  const isMyCard = currentSubjectId === id;
+  const cardPath = isMyCard ? `/post/${id}/answer` : `/post/${id}`;
+  const ariaLabel = isMyCard
+    ? `나의 답변 페이지로 이동`
+    : `${name}님의 답변 페이지로 이동`;
   return (
     <ProfileCard $size={size} $responsive={responsive}>
-      <CardLink
-        to={cardPath}
-        aria-label={`${name}님의 질문 답변 페이지로 이동`}
-      >
+      <CardLink to={cardPath} aria-label={ariaLabel}>
         <ProfileBox>
           <ProfileImage src={profileSrc} alt={`${name} 프로필 이미지`} />
           <ProfileName>{name}</ProfileName>

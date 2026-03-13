@@ -45,10 +45,10 @@ function QuestionList() {
   const sort = searchParams.get('sort') || DEFAULT_SORT;
   const totalCount = subjects.length;
 
-  const subjectId = getStoredSubjectId();
-  const hasSubjectId = Boolean(subjectId);
+  const storedSubjectId = getStoredSubjectId();
+  const hasSubjectId = Boolean(storedSubjectId);
   const logoPath = hasSubjectId ? '/list' : '/';
-  const answerPath = hasSubjectId ? `/post/${subjectId}/answer` : '/';
+  const answerPath = hasSubjectId ? `/post/${storedSubjectId}/answer` : '/';
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(`(max-width: ${TABLET}px)`);
@@ -215,7 +215,7 @@ function QuestionList() {
                   name={subject.name}
                   count={subject.questionCount}
                   profileSrc={subject.imageSource}
-                  hasSubjectId={hasSubjectId}
+                  currentSubjectId={storedSubjectId}
                   responsive
                 />
               ))}
