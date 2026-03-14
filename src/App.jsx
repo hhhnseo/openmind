@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import QuestionList from './pages/QuestionList';
 import Ranking from './pages/Ranking';
 import Answer from './pages/Answer';
-import Chatbot from './components/chatbot/Chatbot';
+import Chatbot from './components/chatbot/ChatBot';
 
 function App() {
   return (
