@@ -5,17 +5,19 @@ import Home from './pages/Home';
 import QuestionList from './pages/QuestionList';
 import Ranking from './pages/Ranking';
 import Answer from './pages/Answer';
-import NotFoundPage from './pages/NotFoundPage';
+import Chatbot from './components/chatbot/Chatbot';
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/list" element={<QuestionList />} />
-      <Route path="/ranking" element={<Ranking />} />
-      <Route path="/post/:id/answer" element={<Answer />} />
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+    <div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/list" element={<QuestionList />} />
+        <Route path="/ranking" element={<Ranking />} />
+        <Route path="/post/:id/answer" element={<Answer />} />
+      </Routes>
+      <Chatbot />
+    </div>
   );
 }
 

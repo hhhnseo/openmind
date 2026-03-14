@@ -1,54 +1,64 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import InputTextArea from '../common/InputTextArea';
 
-const AnswerForm = ({ onSubmit, defaultValue = "" }) => {
-  const [value, setValue] = useState(defaultValue);
+const AnswerForm = ({
+  onSubmit,
+  defaultValue = '',
+  type = 'answer',
+}) => {
+  const [text, setText] = useState(defaultValue);
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    
-    setValue(e.target.value);
+  useEffect(() => {
+    setText(defaultValue);
+  }, [defaultValue]);
 
-    console.log(e.target.value);
-  };
+  const isQuestion = type === 'question';
+  const placeholder = `${isQuestion ? '질문' : '답변'}을 입력해주세요`;
+  const buttonText = isQuestion ? '질문 보내기' : '답변 완료';
+  const isDisabled = !text.trim() || loading;
 
-  const handleSubmit = () => {
-    const text = value.trim();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    if (!text) return;
+    if (isDisabled) return;
 
-    console.log("답변 완료:", text);
-    onSubmit?.(text);
+    try {
+      setLoading(true);
+      await onSubmit?.(text);
+      setText('');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <FormContainer>
+    <FormContainer onSubmit={handleSubmit}>
       <InputTextArea
-        value={value}
-        onChange={handleChange}
-        placeholder="답변을 입력해주세요"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder={placeholder}
       />
 
-      <SubmitButton
-        disabled={!value.trim()}
-        onClick={handleSubmit}
-      >
-        답변 완료
+      <SubmitButton type="submit" disabled={isDisabled}>
+        {loading ? '처리 중...' : buttonText}
       </SubmitButton>
     </FormContainer>
-  )
-}
+  );
+};
 
-const FormContainer = styled.div`
+const FormContainer = styled.form`
+  width: 100%;
   display: flex;
   flex-direction: column;
-  min-width: 490px;
-  margin: 0 auto;
   gap: 8px;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
-  line-height: 22px;
+  line-height: 22px;  
 `;
 
 const SubmitButton = styled.button`
@@ -61,11 +71,11 @@ const SubmitButton = styled.button`
   gap: 8px;
   align-self: stretch;
   border-radius: 8px;
+  border: none;
   background: ${({ disabled }) =>
-    disabled ? "var(--brown-30)" : "var(--brown-40)"};
+    disabled ? 'var(--brown-30)' : 'var(--brown-40)'};
   color: var(--grayScale-10);
-  cursor: ${({ disabled }) =>
-    disabled ? "default" : "pointer"};
+  cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
 `;
 
 export default AnswerForm;
