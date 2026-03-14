@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import QuestionList from './pages/QuestionList';
 import Ranking from './pages/Ranking';
 import Answer from './pages/Answer';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="/list" element={<QuestionList />} />
       <Route path="/ranking" element={<Ranking />} />
       <Route path="/post/:id/answer" element={<Answer />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
