@@ -21,10 +21,15 @@ export default function CardFrame({
 
   const isEmpty = cardList.length === 0;
 
+  const requestedOffsetsRef = useRef(new Set());
+
   const fetchQuestions = async () => {
     if (loading || !hasMore) return;
 
+    if (requestedOffsetsRef.current.has(offset)) return;
+
     try {
+      requestedOffsetsRef.current.add(offset);
       setLoading(true);
 
       const subjectData = JSON.parse(localStorage.getItem("subjectId"));
@@ -106,6 +111,7 @@ export default function CardFrame({
         setCardList([]);
         setTotalCount(0);
         setHasMore(false);
+        requestedOffsetsRef.current.clear();
       } catch (error) {
         console.error(error);
       }

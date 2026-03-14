@@ -12,7 +12,7 @@ const postAnswer = async (questionId, content, isRejected = false) => {
 
     return res.data;
   } catch (error) {
-    console.error("답변 등록 실패", error);
+    console.error("답변 등록 실패", error.res?.data || error);
     throw error;
   }
 };

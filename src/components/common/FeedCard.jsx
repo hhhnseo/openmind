@@ -7,7 +7,6 @@ import AnswerForm from '../answer/AnswerForm';
 import KebabMenu from '../answer/KebabMenu';
 import postAnswer from '../../apis/answers/postAnswer';
 import patchAnswer from '../../apis/answers/patchAnswer';
-import deleteQuestion from '../../apis/questions/deleteQuestion';
 
 export default function FeedCard({
   data,
@@ -56,28 +55,29 @@ export default function FeedCard({
     setEditMode(true);
   };
 
-  const handleDelete = async () => {
-    try {
-      await deleteQuestion(data.id);
-      onDelete?.(data.id);
-    } catch (error) {
-      console.error(error);
-    }
+  const handleDelete = () => {
+    onDelete?.(data.id);
   };
 
   const handleReject = async () => {
     try {
-      if (!answer?.id) return;
+      if (answer?.id) {
+        const response = await patchAnswer(answer.id, {
+          content: answer.content || "답변 거절",
+          isRejected: true,
+        });
 
-      const response = await patchAnswer(answer.id, {
-        content: answer.content,
-        isRejected: true,
-      });
+        setAnswer(response);
+        setEditMode(false);
+        return;
+      }
+
+      const response = await postAnswer(data.id, "답변 거절", true);
 
       setAnswer(response);
       setEditMode(false);
     } catch (error) {
-      console.error(error);
+      console.error("답변 거절 실패", error.response?.data || error);
     }
   };
 
@@ -101,7 +101,7 @@ export default function FeedCard({
       setAnswer(response);
       setEditMode(false);
     } catch (error) {
-      console.error(error);
+      console.error("답변 등록 실패", error.response?.data || error);
       throw error;
     }
   };
