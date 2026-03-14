@@ -1,11 +1,14 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom'; //useParams 추가
 import styled from 'styled-components';
 import heroImg from '../../assets/images/image-hero.svg';
 import Logo from '../common/Logo';
 import profileImg from '../../assets/images/image-profile.svg';
+import ShareButton from '../profile/ShareButton'; //공유버튼 활성화
 
-const Layout = ({ children }) => {
+//하단 children 옆에 profile 추가
+const Layout = ({ children, profile }) => {
   const navigate = useNavigate();
+  const { id } = useParams();
 
   return (
     <Final>
@@ -15,12 +18,23 @@ const Layout = ({ children }) => {
           <button onClick={() => navigate('/')}>
             <Logo size="small" />
           </button>
-          <ProfileImage src={profileImg} alt="프로필 이미지" />
-          <Username>아초는고양이</Username>
+          <ProfileImage
+          //src={profileImg} -> 하단 테스트로 인한 임시 주석처리
+          src={profile?.imageSource || profileImg} //테스트
+          alt="프로필 이미지"
+          onClick={() => { 
+            if (!id) return;
+            navigate(`/post/${id}`)
+            }}
+          />
+            {/* 상단의 onClick 부분 테스트로 임시 추가 */}
+          { /* <Username>아초는고양이</Username> 하단 테스트로 인한 임시 주석처리 */}
+          <Username>{profile?.name || '사용자'}</Username>
           <SNSContainer>
+            {/* <Img src={profileImg} />
             <Img src={profileImg} />
-            <Img src={profileImg} />
-            <Img src={profileImg} />
+            <Img src={profileImg} /> */}
+            <ShareButton /> {/* 공유버튼 활성화 */}
           </SNSContainer>
         </ProfileOverlay>
       </BannerSection>
@@ -73,7 +87,14 @@ const ProfileImage = styled.img`
   width: 136px;
   height: 136px;
   border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
+ /* 프로필 이미지; 위 cursor부터 hover까지 커서 변경입니다 */
 
 const Username = styled.h1`
   color: var(--grayScale-60);

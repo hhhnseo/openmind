@@ -6,6 +6,7 @@ import QuestionList from './pages/QuestionList';
 import Ranking from './pages/Ranking';
 import Answer from './pages/Answer';
 import Chatbot from './components/chatbot/ChatBot';
+import Post from './pages/Post';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/list" element={<QuestionList />} />
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/post/:id/answer" element={<Answer />} />
+        <Route path="/post/:id" element={<Post />} />
       </Routes>
       <Chatbot />
     </div>

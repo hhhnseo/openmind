@@ -1,11 +1,14 @@
 import Layout from '../components/common/Layout';
 import CardFrame from '../components/common/CardFrame';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; //useEffect 추가
+import { useParams } from 'react-router-dom';
+import axiosInstance from '../apis/axiosInstance'; // 추가 필요
 
 export default function Answer() {
-
+  const { id } = useParams(); // url에서 post id 가져오기
   const [deleteSignal, setDeleteSignal] = useState(0);
+  const [profile, setProfile] = useState(null); // 프로필 상태
 
   const handleDeleteAll = () => {
     const confirmed = window.confirm("삭제하시겠습니까?");
@@ -14,8 +17,23 @@ export default function Answer() {
     }
   };
 
+ // post id 기준으로 바로 프로필 가져오기
+  useEffect(() => {
+      if (!id) return;
+      const fetchProfile = async () => {
+      try {
+        const res = await axiosInstance.get(`/subjects/${id}/`);
+        setProfile(res.data);
+      } catch (err) {
+        console.error('프로필 불러오기 실패', err);
+      }
+    };
+
+    fetchProfile();
+  }, [id]);
+
   return (
-    <Layout>
+    <Layout profile={profile}>
 
       <AnswerContainer>
         <DeleteButton onClick={handleDeleteAll}>
@@ -24,6 +42,8 @@ export default function Answer() {
       </AnswerContainer>
 
       <CardFrame
+        subjectID={id}
+        profile={profile}
         showMenu={true}
         showAnswerForm={true}
         deleteSignal={deleteSignal}
