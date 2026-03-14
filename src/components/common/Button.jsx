@@ -5,7 +5,6 @@ import ArrowIcon from '../../assets/icons/icon-arrow-right.svg';
 const StyledButton = styled.button`
   display: inline-flex;
   align-items: center;
-  font-family: 'pretendard';
   background-color: var(--brown-40);
   color: white;
   height: 46px;

@@ -40,6 +40,7 @@ function Ranking() {
   const listSort = [...bestList]
     .sort((a, b) => b.like - b.dislike - (a.like - a.dislike))
     .slice(0, 3);
+
   return (
     <Container>
       <Header>
@@ -54,14 +55,15 @@ function Ranking() {
         <div>
           <Title>인기 답변자 순위</Title>
           <BestUser>
-            {userSort.map((item) => (
-              <UserCard
-                key={item.id}
-                id={item.id}
-                name={item.name}
-                profileSrc={item.imageSource}
-                count={item.questionCount}
-              />
+            {userSort.map((item, index) => (
+              <RankWrapper key={item.id} $rank={index}>
+                <UserCard
+                  id={item.id}
+                  name={item.name}
+                  profileSrc={item.imageSource}
+                  count={item.questionCount}
+                />
+              </RankWrapper>
             ))}
           </BestUser>
         </div>
@@ -73,8 +75,11 @@ function Ranking() {
               <QuestionList key={item.id}>
                 <Link to={`/post/${item.id}/answer`}>
                   <div>
-                    <ItemNum>BEST {ranking + 1}</ItemNum>
+                    <ItemNum>
+                      <span>👍 BEST {ranking + 1}</span>
+                    </ItemNum>
                     <ItemContent>{item.content}</ItemContent>
+                    <div>{item.answer?.content}</div>
                   </div>
                   <Count>
                     <LikeButton
@@ -137,25 +142,43 @@ const BestUser = styled.div`
   display: flex;
   gap: 20px;
 
-  > div {
-    max-width: initial;
-  }
-  > div:first-child > a > div > img {
-    border:3px solid #FFBB00;
-  }
-    > div:nth-child(2n) > a > div > img {
-    border:3px solid #cccccc;
-  }
-    > div:nth-child(3n) > a > div > img {
-    border:3px solid #d3a69a;
-  }
-  > div:first-child > a > div > span:before {
-    content:'🥇';
-  }
   @media only screen and (max-width: 375px) {
-    
-      flex-direction: column;
+    flex-direction: column;
+  }
+`;
 
+const RankWrapper = styled.div`
+  width: 100%;
+
+  ${({ $rank }) =>
+    $rank === 0 &&
+    `
+      > div > a > div > img {
+    border: 3px solid #ffbb00;
+  }
+    div:first-child > a > div > span:before {
+    content: '🥇';
+  }
+    `}
+  ${({ $rank }) =>
+    $rank === 1 &&
+    `
+      > div > a > div > img {
+    border: 3px solid #cccccc;}
+      > div > a > div > span:before {
+      content: '🥈';
+    }
+    `}
+  ${({ $rank }) =>
+    $rank === 2 &&
+    `
+      > div > a > div > img {
+        border: 3px solid #d3a69a;
+      }
+     > div > a > div > span:before {
+        content: '🥉';
+      }
+    `}
 `;
 
 const BestCard = styled.ul`
@@ -173,17 +196,15 @@ const QuestionList = styled.div`
   box-shadow: var(--shadow-1pt);
   padding: 20px;
   border-radius: 16px;
-
-  &:first-child > a > div:first-child > div:first-child:before {
-    content: '👍';
-    margin-right: 5px;
-  }
 `;
 
 const ItemNum = styled.div`
   color: #e6a900;
   font-weight: 500;
   font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  }
 `;
 
 const ItemContent = styled.div`
@@ -204,5 +225,7 @@ const ItemContent = styled.div`
 const Count = styled.div`
   border-top: 1px solid var(--grayScale-30);
   margin-top: 16px;
-  padding: 14px 0 0 0;
+  padding: 24px 0 0 0;
+  font-size: 14px;
+  pointer-events: none;
 `;
