@@ -1,6 +1,20 @@
 import styled from 'styled-components';
 
+const InputTextArea = ({ placeholder, value, onChange }) => {
+  return (
+    <Container>
+      <TextArea placeholder={placeholder} value={value} onChange={onChange} />
+    </Container>
+  );
+};
+
+export default InputTextArea;
+
 const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
   padding: 16px;
   background-color: var(--grayScale-20);
   border-radius: 8px;
@@ -25,13 +39,3 @@ const TextArea = styled.textarea`
     color: var(--grayScale-40);
   }
 `;
-
-const InputTextArea = ({ placeholder, value, onChange }) => {
-  return (
-    <Container>
-      <TextArea placeholder={placeholder} value={value} onChange={onChange} />
-    </Container>
-  );
-};
-
-export default InputTextArea;
