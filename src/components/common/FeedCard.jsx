@@ -1,25 +1,55 @@
 import styled from 'styled-components';
 import ProfileImg from '../../assets/images/image-profile.svg';
 import LikeButton from './LikeButton';
-import Badge from "./Badge";
-import { useState } from "react";
+import Badge from './Badge';
+import { useState } from 'react';
 import AnswerForm from '../answer/AnswerForm';
 import KebabMenu from '../answer/KebabMenu';
+import postAnswer from '../../apis/answers/postAnswer';
+import patchAnswer from '../../apis/answers/patchAnswer';
 
 export default function FeedCard({
   data,
   showMenu = true,
   showAnswerForm = true,
-  onDelete
+  onDelete,
 }) {
-
-  const [answers, setAnswers] = useState(data.answers);
   const [editMode, setEditMode] = useState(false);
-  const [rejected, setRejected] = useState(false);
+  const [answer, setAnswer] = useState(data?.answer ?? null);
 
-  const isAnswered = answers?.length > 0 || rejected;
-  const badgeActive = isAnswered || rejected;
-  const answerContent = answers[0]?.content || "";
+  const isRejected = answer?.isRejected === true;
+  const hasAnswer = !!answer && !isRejected;
+
+  let status = 'none';
+  if (answer) {
+    status = isRejected ? 'rejected' : 'answered';
+  }
+
+  const answerContent = answer?.content ?? '';
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+
+    const created = new Date(dateString);
+    if (Number.isNaN(created.getTime())) return '';
+
+    const now = new Date();
+    const diff = now - created;
+
+    const minutes = Math.floor(diff / (1000 * 60));
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const weeks = Math.floor(days / 7);
+    const months = Math.floor(days / 30);
+
+    if (minutes < 1) return '방금 전';
+    if (minutes < 60) return `${minutes}분 전`;
+    if (hours < 24) return `${hours}시간 전`;
+    if (days === 1) return '어제';
+    if (days < 7) return `${days}일 전`;
+    if (weeks < 5) return `${weeks}주 전`;
+    return `${months}개월 전`;
+  };
 
   const handleEdit = () => {
     setEditMode(true);
@@ -29,26 +59,61 @@ export default function FeedCard({
     onDelete?.(data.id);
   };
 
-  const handleReject = () => {
-    setRejected(true);
-    setAnswers([]);
-    setEditMode(false);
+  const handleReject = async () => {
+    try {
+      if (answer?.id) {
+        const response = await patchAnswer(answer.id, {
+          content: answer.content || "답변 거절",
+          isRejected: true,
+        });
+
+        setAnswer(response);
+        setEditMode(false);
+        return;
+      }
+
+      const response = await postAnswer(data.id, "답변 거절", true);
+
+      setAnswer(response);
+      setEditMode(false);
+    } catch (error) {
+      console.error("답변 거절 실패", error.response?.data || error);
+    }
   };
 
-  const handleSubmitAnswer = (text) => {
-    setAnswers([{ content: text }]);
-    setEditMode(false);
-    setRejected(false);
-  }
+  const handleSubmitAnswer = async (text) => {
+    try {
+      // 기존 답변이 있으면 수정
+      if (answer?.id) {
+        const response = await patchAnswer(answer.id, {
+          content: text,
+          isRejected: false,
+        });
+
+        setAnswer(response);
+        setEditMode(false);
+        return;
+      }
+
+      // 기존 답변이 없으면 새로 생성
+      const response = await postAnswer(data.id, text, false);
+
+      setAnswer(response);
+      setEditMode(false);
+    } catch (error) {
+      console.error("답변 등록 실패", error.response?.data || error);
+      throw error;
+    }
+  };
 
   return (
     <Container>
-      
       <Header>
-        <Badge $answered={badgeActive} />
+        <Badge $status={status} />
+
         {showMenu && (
           <KebabMenu
-            onEdit={isAnswered ? handleEdit : undefined}
+            onEdit={hasAnswer ? handleEdit : undefined}
             onDelete={handleDelete}
             onReject={handleReject}
           />
@@ -56,36 +121,45 @@ export default function FeedCard({
       </Header>
 
       <Question>
-        <QuestionDate>질문 • {data.date || "2주전"}</QuestionDate>
-        {data.question}
+        <QuestionDate>
+          질문 • {formatDate(data.createdAt)}
+        </QuestionDate>
+        {data.content}
       </Question>
 
       <Form>
-        <Profile src={ProfileImg} />
+        <Profile src={ProfileImg} alt="프로필 이미지" />
+
         <Content>
           <UserInfo>
-            <Nickname>{data.author || "아초는 고양이"}</Nickname>
-            <Date>{data.date || "2주전"}</Date>
+            <Nickname>{data.author || '아초는 고양이'}</Nickname>
+            <CreatedDateText>{formatDate(data.createdAt)}</CreatedDateText>
           </UserInfo>
-          {showAnswerForm && (editMode || !isAnswered) ? (
+
+          {showAnswerForm && (editMode || !answer) ? (
             <AnswerForm
+              type="answer"
               defaultValue={answerContent}
               onSubmit={handleSubmitAnswer}
             />
-          ) : rejected ? (
+          ) : isRejected ? (
             <RejectedText>답변 거절</RejectedText>
-          ) : (
-            isAnswered && <AnswerText>{answerContent}</AnswerText>
-          )}
+          ) : hasAnswer ? (
+            <AnswerText>{answerContent}</AnswerText>
+          ) : null}
         </Content>
       </Form>
 
       <Footer>
-        <LikeButton />
+        <LikeButton
+          questionId={data.id}
+          initialLike={data.like}
+          initialDislike={data.dislike}
+        />
       </Footer>
     </Container>
-  )
-};
+  );
+}
 
 const Container = styled.div`
   display: flex;
@@ -131,7 +205,7 @@ const Nickname = styled.span`
   line-height: 24px;
 `;
 
-const Date = styled.span`
+const CreatedDateText = styled.span`
   color: var(--grayScale-40, #818181);
   font-size: 14px;
   font-weight: 500;
@@ -140,7 +214,6 @@ const Date = styled.span`
 
 const Question = styled.div`
   display: flex;
-  align-items: flex-start;
   flex-direction: column;
   font-weight: 400;
   font-size: 18px;
@@ -154,18 +227,18 @@ const QuestionDate = styled.span`
 `;
 
 const RejectedText = styled.div`
-  color: var(--red-50, #B93333);
+  color: var(--red-50, #b93333);
   font-size: 16px;
   font-weight: 400;
   line-height: 22px;
-`
+`;
 
 const Content = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: column;
-  height: 100%;
   font-size: 16px;
-  color: var(--garyScale-60, #000);
+  color: var(--grayScale-60, #000);
   font-weight: 400;
   line-height: 22px;
   gap: 4px;
