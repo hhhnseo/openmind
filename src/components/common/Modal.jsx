@@ -28,7 +28,7 @@ const Modal = ({ isOpen, onClose }) => {
             <Name>{MOCK.name}</Name>
           </UserContainer>
         </MiddleContainer>
-        <AnswerForm />
+        <AnswerForm type="question" />
       </FinalContainer>
     </Wrapper>,
 
