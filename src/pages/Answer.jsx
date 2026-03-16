@@ -3,7 +3,7 @@ import CardFrame from '../components/common/CardFrame';
 import styled from 'styled-components';
 import { useState, useEffect } from 'react'; //useEffect 추가
 import { useParams } from 'react-router-dom';
-import axiosInstance from '../apis/axiosInstance'; // 추가 필요
+import { getSubject } from "../apis/subjects/getSubject";
 
 export default function Answer() {
   const { id } = useParams(); // url에서 post id 가져오기
@@ -22,8 +22,8 @@ export default function Answer() {
       if (!id) return;
       const fetchProfile = async () => {
       try {
-        const res = await axiosInstance.get(`/subjects/${id}/`);
-        setProfile(res.data);
+        const data = await getSubject(id);
+        setProfile(data);
       } catch (err) {
         console.error('프로필 불러오기 실패', err);
       }

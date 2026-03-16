@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom'; //useParams 추가
+import { useNavigate, useParams, useLocation } from 'react-router-dom'; //useLocation 추가
 import styled from 'styled-components';
 import heroImg from '../../assets/images/image-hero.svg';
 import Logo from '../common/Logo';
@@ -9,13 +9,23 @@ import ShareButton from '../profile/ShareButton'; //공유버튼 활성화
 const Layout = ({ children, profile }) => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const location = useLocation();
 
   return (
     <Final>
       <BannerSection>
         <HeroImg src={heroImg} alt="배너 배경" />
         <ProfileOverlay>
-          <button onClick={() => navigate('/')}>
+          <button onClick={() => {
+            const subjectId = localStorage.getItem("subjectId"); //로컬에 저장된 값
+
+            if (subjectId) {
+              navigate("/list");
+            } else {
+              navigate("/");
+            }
+          }} //로컬값 있으면 로고 클릭 시 -> list로, 없으면 메인페이지로
+          >
             <Logo size="small" />
           </button>
           <ProfileImage
@@ -24,8 +34,12 @@ const Layout = ({ children, profile }) => {
           alt="프로필 이미지"
           onClick={() => { 
             if (!id) return;
-            navigate(`/post/${id}`)
-            }}
+            const target = `/post/${id}`;
+
+            if (location.pathname !== target) {
+              navigate(target);
+            }
+          }}
           />
             {/* 상단의 onClick 부분 테스트로 임시 추가 */}
           { /* <Username>아초는고양이</Username> 하단 테스트로 인한 임시 주석처리 */}
