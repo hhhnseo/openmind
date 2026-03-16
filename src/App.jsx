@@ -7,6 +7,7 @@ import Ranking from './pages/Ranking';
 import Answer from './pages/Answer';
 import Chatbot from './components/chatbot/ChatBot';
 import Post from './pages/Post';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/post/:id/answer" element={<Answer />} />
         <Route path="/post/:id" element={<Post />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Chatbot />
     </div>

@@ -3,13 +3,14 @@ import styled from 'styled-components';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Logo from '../components/common/Logo';
 import Button from '../components/common/Button';
+import StatusMessage from '../components/questionlist/StatusMessage';
 import SortDropdown from '../components/questionlist/Dropdown';
 import UserCard from '../components/common/UserCard';
 import Pagination from '../components/questionlist/Pagination';
 import getAllSubjects from '../apis/subjects/getAllSubjects';
 
 const TABLET = 949;
-const MOBILE = 767;
+const MOBILE = 768;
 const MOBILE_PAGE_SIZE = 6;
 const DESKTOP_PAGE_SIZE = 8;
 const DEFAULT_SORT = 'recent';
@@ -194,30 +195,45 @@ function QuestionList() {
             <SortDropdown value={sort} onChange={handleSortChange} />
           </TitleArea>
 
-          {!loading && !error && (
-            <CardArea>
-              {pagedSubjects.map((subject) => (
-                <UserCard
-                  key={subject.id}
-                  id={subject.id}
-                  name={subject.name}
-                  count={subject.questionCount}
-                  profileSrc={subject.imageSource}
-                  currentSubjectId={storedSubjectId}
-                  responsive
-                />
-              ))}
-            </CardArea>
+          {loading && (
+            <StatusMessage type="loading">
+              질문 목록을 불러오는 중입니다.
+            </StatusMessage>
           )}
-          {!error && totalCount > 0 && (
-            <Pagination
-              totalCount={totalCount}
-              pageSize={pageSize}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-              responsive
-            />
+
+          {!loading && error && (
+            <StatusMessage type="error">{error}</StatusMessage>
           )}
+
+          {!loading && !error && totalCount === 0 && (
+            <StatusMessage>등록된 사용자가 없습니다.</StatusMessage>
+          )}
+
+          {!loading && !error && totalCount > 0 && (
+            <>
+              <CardArea>
+                {pagedSubjects.map((subject) => (
+                  <UserCard
+                    key={subject.id}
+                    id={subject.id}
+                    name={subject.name}
+                    count={subject.questionCount}
+                    profileSrc={subject.imageSource}
+                    currentSubjectId={storedSubjectId}
+                    responsive
+                  />
+                ))}
+              </CardArea>
+              <Pagination
+                totalCount={totalCount}
+                pageSize={pageSize}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+                responsive
+              />
+            </>
+          )}
+
           {hasSubjectId && (
             <LogoutButtonArea>
               <Button as={Link} to="/" variant="outline" onClick={handleLogout}>
