@@ -24,7 +24,7 @@ function Ranking() {
     //질문 순위
     const getList = async () => {
       setLoading(true);
-      const response = await getAllSubjects({ limit: 50, offset: 0 });
+      const response = await getAllSubjects({ limit: 100, offset: 0 });
       const idList = response.results.map((item) => item.id);
       const requests = idList.map((id) => getQuestion(id));
       const responses = await Promise.all(requests);
