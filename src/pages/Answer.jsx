@@ -1,14 +1,25 @@
 import Layout from '../components/common/Layout';
 import CardFrame from '../components/common/CardFrame';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Answer() {
-
   const [deleteSignal, setDeleteSignal] = useState(0);
+  const [questionCount, setQuestionCount] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const subjectData = JSON.parse(localStorage.getItem('subjectId'));
+    const subjectId = subjectData?.id;
+
+    if (!subjectId) {
+      navigate('/');
+    }
+  }, [navigate]);
 
   const handleDeleteAll = () => {
-    const confirmed = window.confirm("삭제하시겠습니까?");
+    const confirmed = window.confirm('삭제하시겠습니까?');
     if (confirmed) {
       setDeleteSignal((prev) => prev + 1);
     }
@@ -16,21 +27,23 @@ export default function Answer() {
 
   return (
     <Layout>
-
       <AnswerContainer>
-        <DeleteButton onClick={handleDeleteAll}>
-          삭제하기
-        </DeleteButton>
+        {questionCount > 0 && (
+          <DeleteButton onClick={handleDeleteAll}>
+            삭제하기
+          </DeleteButton>
+        )}
       </AnswerContainer>
 
       <CardFrame
         showMenu={true}
         showAnswerForm={true}
         deleteSignal={deleteSignal}
+        setQuestionCount={setQuestionCount}
       />
     </Layout>
-  )
-};
+  );
+}
 
 const AnswerContainer = styled.div`
   display: flex;
@@ -47,7 +60,7 @@ const DeleteButton = styled.button`
   align-items: center;
   gap: 8px;
   border-radius: 200px;
-  background: var(--brown-40, #542F1A);
+  background: var(--brown-40, #542f1a);
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
   color: var(--grayScale-10, #fff);
   font-size: 15px;

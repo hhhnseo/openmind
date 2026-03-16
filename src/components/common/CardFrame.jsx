@@ -10,6 +10,7 @@ export default function CardFrame({
   showMenu = true,
   showAnswerForm = false,
   deleteSignal,
+  setQuestionCount,
 }) {
   const [cardList, setCardList] = useState([]);
   const [offset, setOffset] = useState(0);
@@ -18,52 +19,62 @@ export default function CardFrame({
   const [totalCount, setTotalCount] = useState(0);
 
   const observerRef = useRef(null);
+  const requestedOffsetsRef = useRef(new Set());
 
   const isEmpty = cardList.length === 0;
 
-  const requestedOffsetsRef = useRef(new Set());
-
   const fetchQuestions = async () => {
-    if (loading || !hasMore) return;
-    if (requestedOffsetsRef.current.has(offset)) return;
+  if (loading || !hasMore) return;
+  if (requestedOffsetsRef.current.has(offset)) return;
 
-    try {
-      requestedOffsetsRef.current.add(offset);
-      setLoading(true);
+  try {
+    requestedOffsetsRef.current.add(offset);
+    setLoading(true);
 
-      const subjectData = JSON.parse(localStorage.getItem("subjectId"));
-      const subjectId = subjectData.id;
+    const subjectData = JSON.parse(localStorage.getItem("subjectId"));
+    const subjectId = subjectData?.id;
 
-      const res = await getQuestions(subjectId, 3, offset);
-      const results = res?.results ?? [];
+    if (!subjectId) {
+      console.error("subjectId가 없습니다.");
+      return;
+    }
 
-      setTotalCount(res?.count ?? 0);
+    const res = await getQuestions(subjectId, 3, offset);
+    const results = res?.results ?? [];
 
-      setCardList((prev) => {
-        const map = new Map();
+    setTotalCount(res?.count ?? 0);
 
-        [...prev, ...results].forEach((item) => {
-          map.set(item.id, item);
-        });
+    setCardList((prev) => {
+      const map = new Map();
 
-        return Array.from(map.values());
+      [...prev, ...results].forEach((item) => {
+        map.set(item.id, item);
       });
 
-      setOffset((prev) => prev + 3);
+      return Array.from(map.values());
+    });
 
-      if (res?.next === null) {
-        setHasMore(false);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+    setOffset((prev) => prev + 3);
+
+    if (res?.next === null) {
+      setHasMore(false);
     }
-  };
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchQuestions();
   }, []);
+
+  useEffect(() => {
+    if (setQuestionCount) {
+      setQuestionCount(totalCount);
+    }
+  }, [totalCount, setQuestionCount]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -150,7 +161,11 @@ export default function CardFrame({
             ))}
           </CardList>
 
-          {hasMore && <Observer ref={observerRef}>{loading ? "불러오는 중..." : ""}</Observer>}
+          {hasMore && (
+            <Observer ref={observerRef}>
+              {loading ? "불러오는 중..." : ""}
+            </Observer>
+          )}
         </>
       )}
     </Container>
