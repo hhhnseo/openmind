@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import Button from '../components/common/Button';
 import Logo from '../components/common/Logo';
 import UserCard from '../components/common/UserCard';
@@ -11,23 +11,26 @@ import getQuestion from '../apis/subjects/getQuestion';
 function Ranking() {
   const [bestUser, setBestUser] = useState([]);
   const [bestList, setBestList] = useState([]);
+  const [loading, setLoading] = useState();
 
   useEffect(() => {
     //답변자 순위
     const getUser = async () => {
-      const response = await getAllSubjects({ limit: 10000, offset: 0 });
+      const response = await getAllSubjects({ limit: 1000, offset: 0 });
       setBestUser(response.results);
     };
     getUser();
 
     //질문 순위
     const getList = async () => {
-      const response = await getAllSubjects({ limit: 10000, offset: 0 });
+      setLoading(true);
+      const response = await getAllSubjects({ limit: 50, offset: 0 });
       const idList = response.results.map((item) => item.id);
       const requests = idList.map((id) => getQuestion(id));
       const responses = await Promise.all(requests);
       const allQuestions = responses.flatMap((res) => res.results);
       setBestList(allQuestions);
+      setLoading(false);
     };
 
     getList();
@@ -71,25 +74,28 @@ function Ranking() {
         <div>
           <Title>인기 질문 순위</Title>
           <BestCard>
-            {listSort.map((item, ranking) => (
-              <QuestionList key={item.id}>
-                <Link to={`/post/${item.id}/answer`}>
-                  <div>
-                    <ItemNum>
-                      <span>👍 BEST {ranking + 1}</span>
-                    </ItemNum>
-                    <ItemContent>{item.content}</ItemContent>
-                    <div>{item.answer?.content}</div>
-                  </div>
-                  <Count>
-                    <LikeButton
-                      likeCounts={item.like}
-                      dislikeCounts={item.dislike}
-                    />
-                  </Count>
-                </Link>
-              </QuestionList>
-            ))}
+            {loading ? (
+              <Spinner />
+            ) : (
+              listSort.map((item, ranking) => (
+                <QuestionList key={item.id}>
+                  <Link to={`/post/${item.id}/answer`}>
+                    <div>
+                      <ItemNum>
+                        <span>👍 BEST {ranking + 1}</span>
+                      </ItemNum>
+                      <ItemContent>{item.content}</ItemContent>
+                    </div>
+                    <Count>
+                      <LikeButton
+                        likeCounts={item.like}
+                        dislikeCounts={item.dislike}
+                      />
+                    </Count>
+                  </Link>
+                </QuestionList>
+              ))
+            )}
           </BestCard>
         </div>
       </RankingWrap>
@@ -181,7 +187,7 @@ const RankWrapper = styled.div`
     `}
 `;
 
-const BestCard = styled.ul`
+const BestCard = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -228,4 +234,21 @@ const Count = styled.div`
   padding: 24px 0 0 0;
   font-size: 14px;
   pointer-events: none;
+`;
+
+const Spin = keyframes`
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+const Spinner = styled.div`
+  align-self: center;
+  margin: 50px 0;
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--brown-30);
+  border-top: 4px solid var(--brown-50);
+  border-radius: 50%;
+  animation: ${Spin} 1s linear infinite;
 `;
