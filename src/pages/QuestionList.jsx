@@ -258,7 +258,7 @@ const Page = styled.div`
   background-color: var(--grayScale-20);
 
   @media (max-width: ${MOBILE}px) {
-    padding: 40px 0 50px;
+    padding: 40px 0 100px;
   }
 `;
 const Inner = styled.div`
