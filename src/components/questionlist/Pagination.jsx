@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-const MOBILE = 767;
+const MOBILE = 768;
 const DEFAULT_PAGE_SIZE = 8;
 
 const SIZE = {

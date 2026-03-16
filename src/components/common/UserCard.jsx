@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import MessagesIcon from '../../assets/icons/icon-messages.svg?react';
 import profileImage from '../../assets/images/image-profile.svg';
 
-const MOBILE = 767;
+const MOBILE = 768;
 
 const SIZE = {
   large: css`
