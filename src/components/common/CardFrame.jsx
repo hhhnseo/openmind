@@ -25,7 +25,6 @@ export default function CardFrame({
 
   const fetchQuestions = async () => {
     if (loading || !hasMore) return;
-
     if (requestedOffsetsRef.current.has(offset)) return;
 
     try {
