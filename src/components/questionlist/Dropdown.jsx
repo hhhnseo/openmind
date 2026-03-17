@@ -103,6 +103,23 @@ const DropdownButton = styled.button`
     ${({ $isOpen }) =>
       $isOpen ? 'var(--grayScale-60)' : 'var(--grayScale-40)'};
   border-radius: 8px;
+  transition:
+    border 0.3s ease-in-out,
+    color 0.3s ease-in-out;
+
+  svg path {
+    fill: var(--grayScale-40);
+    transition: 0.3s ease-in-out;
+  }
+
+  &:hover {
+    border-color: var(--grayScale-60);
+    color: var(--grayScale-60);
+
+    svg path {
+      fill: var(--grayScale-60);
+    }
+  }
 
   &:focus-visible {
     outline: 2px solid var(--blue-50);
