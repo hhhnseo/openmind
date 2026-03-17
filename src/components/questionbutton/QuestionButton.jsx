@@ -18,7 +18,7 @@ export default QuestionButton;
 
 const FloatingButton = styled.button`
   position: fixed;
-  right: 32px;
+  left: 32px;
   bottom: 32px;
 
   width: 208px;
@@ -52,7 +52,7 @@ const FloatingButton = styled.button`
     width: 123px;
     height: 54px;
 
-    right: 16px;
+    left: 16px;
     bottom: 20px;
   }
 `;
