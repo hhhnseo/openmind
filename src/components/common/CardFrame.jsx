@@ -7,6 +7,8 @@ import getQuestions from "../../apis/questions/getQuestions";
 import deleteQuestion from "../../apis/questions/deleteQuestion";
 
 export default function CardFrame({
+  subjectID, //테스트 추가
+  profile, //테스트 추가
   showMenu = true,
   showAnswerForm = false,
   deleteSignal,
@@ -32,10 +34,17 @@ export default function CardFrame({
       requestedOffsetsRef.current.add(offset);
       setLoading(true);
 
-      const subjectData = JSON.parse(localStorage.getItem("subjectId"));
-      const subjectId = subjectData.id;
+      // const subjectData = JSON.parse(localStorage.getItem("subjectId"));
+      // const subjectId = subjectData.id;
+      // 위 코드는 localStorage에 저장된 내 id 가져오는 코드라 임시 주석 처리
 
-      const res = await getQuestions(subjectId, 3, offset);
+      const targetId = subjectID ?? myId; 
+      // URL id가 있으면 URL id 사용
+      // 없으면 localStorage id 사용
+
+      if (!targetId) return; // 둘 다 없으면 api 요청 스탑
+      
+      const res = await getQuestions(targetId, 3, offset);
       const results = res?.results ?? [];
 
       setTotalCount(res?.count ?? 0);
@@ -147,6 +156,7 @@ export default function CardFrame({
                 showMenu={showMenu}
                 showAnswerForm={showAnswerForm}
                 onDelete={handleDelete}
+                profile={profile} //테스트
               />
             ))}
           </CardList>
