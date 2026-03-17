@@ -1,16 +1,9 @@
-# React + Vite
+# 🗣️ 오픈마인드 | OPENMIND
+<img width="1898" height="956" alt="image" src="https://github.com/user-attachments/assets/88a258e4-4e8c-47d6-880d-db7cd19027ec" />
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 프로젝트 소개
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+오픈마인드는 누구나 질문 페이지를 만들고, 익명으로 소통할 수 있는 플랫폼입니다.<br>
+사용자는 자신의 이름을 입력하고 질문을 받을 수 있는 페이지를 생성할 수 있으며,<br>
+다른 사람에게 익명으로 질문을 남길 수도 있습니다.<br>
+이렇게 소통하면서 다양한 의견과 피드를 나누는 재미를 느낄 수 있답니다!
