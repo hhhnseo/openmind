@@ -1,26 +1,63 @@
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useParams, useLocation } from 'react-router-dom'; //useLocation 추가
 import styled from 'styled-components';
 import heroImg from '../../assets/images/image-hero.svg';
 import Logo from '../common/Logo';
 import profileImg from '../../assets/images/image-profile.svg';
+import ShareButton from '../profile/ShareButton'; //공유버튼 활성화
+import QuestionButton from '../questionbutton/QuestionButton';
+import Modal from '../common/Modal'
+//질문 작성 버튼, 모달 추가
 
-const Layout = ({ children }) => {
+//하단 children 옆에 profile 추가
+const Layout = ({ children, profile }) => {
   const navigate = useNavigate();
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const handleOpenModal = () => setModalOpen(true);
+  const handleCloseModal = () => setModalOpen(false);
+  //모달 열기 닫기 
+  const { id } = useParams();
+  const location = useLocation();
 
   return (
     <Final>
       <BannerSection>
         <HeroImg src={heroImg} alt="배너 배경" />
         <ProfileOverlay>
-          <button onClick={() => navigate('/')}>
+          <button onClick={() => {
+            const subjectId = localStorage.getItem("subjectId"); //로컬에 저장된 값
+
+            if (subjectId) {
+              navigate("/list");
+            } else {
+              navigate("/");
+            }
+          }} //로컬값 있으면 로고 클릭 시 -> list로, 없으면 메인페이지로
+          >
             <Logo size="small" />
           </button>
-          <ProfileImage src={profileImg} alt="프로필 이미지" />
-          <Username>아초는고양이</Username>
+          <ProfileImage
+          //src={profileImg} -> 하단 테스트로 인한 임시 주석처리
+          src={profile?.imageSource || profileImg} //테스트
+          alt="프로필 이미지"
+          onClick={() => { 
+            if (!id) return;
+            const target = `/post/${id}`;
+
+            if (location.pathname !== target) {
+              navigate(target);
+            }
+          }}
+          />
+            {/* 상단의 onClick 부분 테스트로 임시 추가 */}
+          { /* <Username>아초는고양이</Username> 하단 테스트로 인한 임시 주석처리 */}
+          <Username>{profile?.name || '사용자'}</Username>
           <SNSContainer>
+            {/* <Img src={profileImg} />
             <Img src={profileImg} />
-            <Img src={profileImg} />
-            <Img src={profileImg} />
+            <Img src={profileImg} /> */}
+            <ShareButton /> {/* 공유버튼 활성화 */}
           </SNSContainer>
         </ProfileOverlay>
       </BannerSection>
@@ -29,6 +66,8 @@ const Layout = ({ children }) => {
           {children}
         </QuestionContainer>
       </MainContent>
+        <QuestionButton handleOpenModal={handleOpenModal} />
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
     </Final>
   );
 };
@@ -73,7 +112,14 @@ const ProfileImage = styled.img`
   width: 136px;
   height: 136px;
   border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
+ /* 프로필 이미지; 위 cursor부터 hover까지 커서 변경입니다 */
 
 const Username = styled.h1`
   color: var(--grayScale-60);

@@ -36,7 +36,7 @@ function QuestionList() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [subjects, setSubjects] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pageSize, setPageSize] = useState(
     window.innerWidth <= TABLET ? MOBILE_PAGE_SIZE : DESKTOP_PAGE_SIZE
@@ -258,7 +258,7 @@ const Page = styled.div`
   background-color: var(--grayScale-20);
 
   @media (max-width: ${MOBILE}px) {
-    padding: 40px 0 50px;
+    padding: 40px 0 100px;
   }
 `;
 const Inner = styled.div`

@@ -18,6 +18,7 @@ export default function Answer() {
     }
   }, [navigate]);
 
+
   const handleDeleteAll = () => {
     const confirmed = window.confirm('삭제하시겠습니까?');
     if (confirmed) {
@@ -25,8 +26,24 @@ export default function Answer() {
     }
   };
 
+ // post id 기준으로 바로 프로필 가져오기
+  useEffect(() => {
+      if (!id) return;
+      const fetchProfile = async () => {
+      try {
+        const data = await getSubject(id);
+        setProfile(data);
+      } catch (err) {
+        console.error('프로필 불러오기 실패', err);
+      }
+    };
+
+    fetchProfile();
+  }, [id]);
+
   return (
     <Layout>
+
       <AnswerContainer>
         {questionCount > 0 && (
           <DeleteButton onClick={handleDeleteAll}>
@@ -36,6 +53,8 @@ export default function Answer() {
       </AnswerContainer>
 
       <CardFrame
+        subjectID={id}
+        profile={profile}
         showMenu={true}
         showAnswerForm={true}
         deleteSignal={deleteSignal}

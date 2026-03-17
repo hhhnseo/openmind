@@ -7,6 +7,8 @@ import getQuestions from "../../apis/questions/getQuestions";
 import deleteQuestion from "../../apis/questions/deleteQuestion";
 
 export default function CardFrame({
+  subjectID, //테스트 추가
+  profile, //테스트 추가
   showMenu = true,
   showAnswerForm = false,
   deleteSignal,
@@ -157,6 +159,7 @@ export default function CardFrame({
                 showMenu={showMenu}
                 showAnswerForm={showAnswerForm}
                 onDelete={handleDelete}
+                profile={profile} //테스트
               />
             ))}
           </CardList>
