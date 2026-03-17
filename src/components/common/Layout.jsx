@@ -1,13 +1,22 @@
+import { useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom'; //useLocation 추가
 import styled from 'styled-components';
 import heroImg from '../../assets/images/image-hero.svg';
 import Logo from '../common/Logo';
 import profileImg from '../../assets/images/image-profile.svg';
 import ShareButton from '../profile/ShareButton'; //공유버튼 활성화
+import QuestionButton from '../questionbutton/QuestionButton';
+import Modal from '../common/Modal'
+//질문 작성 버튼, 모달 추가
 
 //하단 children 옆에 profile 추가
 const Layout = ({ children, profile }) => {
   const navigate = useNavigate();
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const handleOpenModal = () => setModalOpen(true);
+  const handleCloseModal = () => setModalOpen(false);
+  //모달 열기 닫기 
   const { id } = useParams();
   const location = useLocation();
 
@@ -57,6 +66,8 @@ const Layout = ({ children, profile }) => {
           {children}
         </QuestionContainer>
       </MainContent>
+        <QuestionButton handleOpenModal={handleOpenModal} />
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
     </Final>
   );
 };
