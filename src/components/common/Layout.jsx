@@ -1,14 +1,12 @@
-import { useNavigate, useParams, useLocation } from 'react-router-dom'; //useLocation 추가
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import heroImg from '../../assets/images/image-hero.svg';
 import Logo from '../common/Logo';
 import profileImg from '../../assets/images/image-profile.svg';
-import ShareButton from '../profile/ShareButton'; //공유버튼 활성화
+import ShareButton from '../profile/ShareButton';
 import QuestionButton from '../questionbutton/QuestionButton';
 import Modal from '../common/Modal';
-//질문 작성 버튼, 모달 추가
 
-//하단 children 옆에 profile 추가
 const Layout = ({ children, profile, handleOpenModal }) => {
   const navigate = useNavigate();
 
