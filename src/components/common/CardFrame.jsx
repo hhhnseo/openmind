@@ -1,17 +1,18 @@
-import styled from "styled-components";
-import MsgIcon from "../../assets/icons/icon-messages.svg?react";
-import EmptyIcon from "../../assets/images/image-empty.svg?react";
-import FeedCard from "./FeedCard";
-import { useEffect, useRef, useState } from "react";
-import getQuestions from "../../apis/questions/getQuestions";
-import deleteQuestion from "../../apis/questions/deleteQuestion";
+import styled from 'styled-components';
+import MsgIcon from '../../assets/icons/icon-messages.svg?react';
+import EmptyIcon from '../../assets/images/image-empty.svg?react';
+import FeedCard from './FeedCard';
+import { useEffect, useRef, useState, useCallback } from 'react'; // useCallback 추가
+import getQuestions from '../../apis/questions/getQuestions';
+import deleteQuestion from '../../apis/questions/deleteQuestion';
 
 export default function CardFrame({
-  subjectID, //테스트 추가
-  profile, //테스트 추가
+  subjectID,
+  profile,
   showMenu = true,
   showAnswerForm = false,
   deleteSignal,
+  refreshSignal, // 부모로부터 전달받은 신호
 }) {
   const [cardList, setCardList] = useState([]);
   const [offset, setOffset] = useState(0);
@@ -20,87 +21,91 @@ export default function CardFrame({
   const [totalCount, setTotalCount] = useState(0);
 
   const observerRef = useRef(null);
-
+  const requestedOffsetsRef = useRef(new Set());
   const isEmpty = cardList.length === 0;
 
-  const requestedOffsetsRef = useRef(new Set());
+  // 1. fetchQuestions를 useCallback으로 감싸서 안정화
+  const fetchQuestions = useCallback(
+    async (isRefresh = false) => {
+      // 새로고침이 아닐 때, 로딩 중이거나 더 가져올 데이터가 없으면 차단
+      if (!isRefresh && (loading || !hasMore)) return;
 
-  const fetchQuestions = async () => {
-    if (loading || !hasMore) return;
+      const currentOffset = isRefresh ? 0 : offset;
 
-    if (requestedOffsetsRef.current.has(offset)) return;
+      // 이미 요청한 오프셋이면 차단
+      if (requestedOffsetsRef.current.has(currentOffset)) return;
 
-    try {
-      requestedOffsetsRef.current.add(offset);
-      setLoading(true);
+      try {
+        setLoading(true);
+        requestedOffsetsRef.current.add(currentOffset);
 
-      // const subjectData = JSON.parse(localStorage.getItem("subjectId"));
-      // const subjectId = subjectData.id;
-      // 위 코드는 localStorage에 저장된 내 id 가져오는 코드라 임시 주석 처리
+        if (!subjectID) return;
 
-      const targetId = subjectID ?? myId; 
-      // URL id가 있으면 URL id 사용
-      // 없으면 localStorage id 사용
+        const res = await getQuestions(subjectID, 3, currentOffset);
+        const results = res?.results ?? [];
 
-      if (!targetId) return; // 둘 다 없으면 api 요청 스탑
-      
-      const res = await getQuestions(targetId, 3, offset);
-      const results = res?.results ?? [];
+        setTotalCount(res?.count ?? 0);
 
-      setTotalCount(res?.count ?? 0);
+        setCardList((prev) => {
+          if (isRefresh) return results; // 새로고침이면 데이터를 갈아끼움
 
-      setCardList((prev) => {
-        const map = new Map();
-
-        [...prev, ...results].forEach((item) => {
-          map.set(item.id, item);
+          // 중복 제거 로직
+          const map = new Map();
+          [...prev, ...results].forEach((item) => map.set(item.id, item));
+          return Array.from(map.values());
         });
 
-        return Array.from(map.values());
-      });
+        // 다음 요청을 위한 오프셋 설정
+        setOffset(currentOffset + 3);
 
-      setOffset((prev) => prev + 3);
-
-      if (res?.next === null) {
-        setHasMore(false);
+        if (res?.next === null) {
+          setHasMore(false);
+        } else {
+          setHasMore(true); // 새로고침 시 다시 true로 풀어줌
+        }
+      } catch (error) {
+        console.error('데이터 로드 실패:', error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [loading, hasMore, offset, subjectID]
+  );
 
+  // 2. [추가] refreshSignal이 변경될 때 초기화 및 재호출
   useEffect(() => {
-    fetchQuestions();
-  }, []);
+    const handleRefresh = async () => {
+      requestedOffsetsRef.current.clear(); // 요청 기록 초기화
+      setHasMore(true); // 다시 불러올 수 있게 상태 초기화
+      await fetchQuestions(true); // isRefresh 인자를 true로 전달
+    };
 
+    handleRefresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshSignal, subjectID]);
+  // subjectID가 바뀔 때(다른 페이지 이동 등)도 초기화되도록 설정
+
+  // 3. 무한 스크롤 관찰자 로직
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       const target = entries[0];
-
+      // 관찰 대상이 보이고, 더 가져올 게 있고, 로딩 중이 아닐 때만 호출
       if (target.isIntersecting && hasMore && !loading) {
         fetchQuestions();
       }
     });
 
     const currentRef = observerRef.current;
-
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
+    if (currentRef) observer.observe(currentRef);
 
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
+      if (currentRef) observer.unobserve(currentRef);
     };
-  }, [hasMore, loading, offset]);
+  }, [fetchQuestions, hasMore, loading]);
 
   const handleDelete = async (id) => {
     try {
       await deleteQuestion(id);
-
       setCardList((prev) => prev.filter((q) => q.id !== id));
       setTotalCount((prev) => Math.max(prev - 1, 0));
     } catch (error) {
@@ -110,13 +115,11 @@ export default function CardFrame({
 
   useEffect(() => {
     if (!deleteSignal) return;
-
     const deleteAll = async () => {
       try {
         for (const q of cardList) {
           await deleteQuestion(q.id);
         }
-
         setCardList([]);
         setTotalCount(0);
         setHasMore(false);
@@ -125,9 +128,8 @@ export default function CardFrame({
         console.error(error);
       }
     };
-
     deleteAll();
-  }, [deleteSignal]);
+  }, [deleteSignal, cardList]);
 
   return (
     <Container>
@@ -156,18 +158,23 @@ export default function CardFrame({
                 showMenu={showMenu}
                 showAnswerForm={showAnswerForm}
                 onDelete={handleDelete}
-                profile={profile} //테스트
+                profile={profile}
               />
             ))}
           </CardList>
 
-          {hasMore && <Observer ref={observerRef}>{loading ? "불러오는 중..." : ""}</Observer>}
+          {hasMore && (
+            <Observer ref={observerRef}>
+              {loading ? '불러오는 중...' : ''}
+            </Observer>
+          )}
         </>
       )}
     </Container>
   );
 }
 
+// Styled components는 그대로 유지...
 const Container = styled.div`
   width: 100%;
   border-radius: 16px;
