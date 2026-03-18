@@ -1,15 +1,19 @@
-import styled from "styled-components";
-import MsgIcon from "../../assets/icons/icon-messages.svg?react";
-import EmptyIcon from "../../assets/images/image-empty.svg?react";
-import FeedCard from "./FeedCard";
-import { useEffect, useRef, useState } from "react";
-import getQuestions from "../../apis/questions/getQuestions";
-import deleteQuestion from "../../apis/questions/deleteQuestion";
+import styled from 'styled-components';
+import MsgIcon from '../../assets/icons/icon-messages.svg?react';
+import EmptyIcon from '../../assets/images/image-empty.svg?react';
+import FeedCard from './FeedCard';
+import { useEffect, useRef, useState, useCallback } from 'react'; // useCallback 추가
+import getQuestions from '../../apis/questions/getQuestions';
+import deleteQuestion from '../../apis/questions/deleteQuestion';
 
 export default function CardFrame({
+  subjectID,
+  profile,
   showMenu = true,
   showAnswerForm = false,
   deleteSignal,
+  refreshSignal,
+  setQuestionCount,
 }) {
   const [cardList, setCardList] = useState([]);
   const [offset, setOffset] = useState(0);
@@ -18,80 +22,88 @@ export default function CardFrame({
   const [totalCount, setTotalCount] = useState(0);
 
   const observerRef = useRef(null);
-
+  const requestedOffsetsRef = useRef(new Set());
   const isEmpty = cardList.length === 0;
 
-  const requestedOffsetsRef = useRef(new Set());
+  const fetchQuestions = useCallback(
+    async (isRefresh = false) => {
+      if (!isRefresh && (loading || !hasMore)) return;
 
-  const fetchQuestions = async () => {
-    if (loading || !hasMore) return;
+      const currentOffset = isRefresh ? 0 : offset;
 
-    if (requestedOffsetsRef.current.has(offset)) return;
+      if (requestedOffsetsRef.current.has(currentOffset)) return;
 
-    try {
-      requestedOffsetsRef.current.add(offset);
-      setLoading(true);
+      try {
+        setLoading(true);
+        requestedOffsetsRef.current.add(currentOffset);
 
-      const subjectData = JSON.parse(localStorage.getItem("subjectId"));
-      const subjectId = subjectData.id;
+        if (!subjectID) return;
 
-      const res = await getQuestions(subjectId, 3, offset);
-      const results = res?.results ?? [];
+        const res = await getQuestions(subjectID, 3, currentOffset);
+        const results = res?.results ?? [];
 
-      setTotalCount(res?.count ?? 0);
+        setTotalCount(res?.count ?? 0);
 
-      setCardList((prev) => {
-        const map = new Map();
+        setCardList((prev) => {
+          if (isRefresh) return results;
 
-        [...prev, ...results].forEach((item) => {
-          map.set(item.id, item);
+          const map = new Map();
+          [...prev, ...results].forEach((item) => map.set(item.id, item));
+          return Array.from(map.values());
         });
 
-        return Array.from(map.values());
-      });
+        setOffset(currentOffset + 3);
 
-      setOffset((prev) => prev + 3);
-
-      if (res?.next === null) {
-        setHasMore(false);
+        if (res?.next === null) {
+          setHasMore(false);
+        } else {
+          setHasMore(true);
+        }
+      } catch (error) {
+        console.error('데이터 로드 실패:', error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [loading, hasMore, offset, subjectID]
+  );
 
   useEffect(() => {
-    fetchQuestions();
-  }, []);
+    const handleRefresh = async () => {
+      requestedOffsetsRef.current.clear();
+      setHasMore(true);
+      await fetchQuestions(true);
+    };
+
+    handleRefresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshSignal, subjectID]);
+
+  useEffect(() => {
+    if (setQuestionCount) {
+      setQuestionCount(totalCount);
+    }
+  }, [totalCount, setQuestionCount]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       const target = entries[0];
-
       if (target.isIntersecting && hasMore && !loading) {
         fetchQuestions();
       }
     });
 
     const currentRef = observerRef.current;
-
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
+    if (currentRef) observer.observe(currentRef);
 
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
+      if (currentRef) observer.unobserve(currentRef);
     };
-  }, [hasMore, loading, offset]);
+  }, [fetchQuestions, hasMore, loading]);
 
   const handleDelete = async (id) => {
     try {
       await deleteQuestion(id);
-
       setCardList((prev) => prev.filter((q) => q.id !== id));
       setTotalCount((prev) => Math.max(prev - 1, 0));
     } catch (error) {
@@ -101,13 +113,11 @@ export default function CardFrame({
 
   useEffect(() => {
     if (!deleteSignal) return;
-
     const deleteAll = async () => {
       try {
         for (const q of cardList) {
           await deleteQuestion(q.id);
         }
-
         setCardList([]);
         setTotalCount(0);
         setHasMore(false);
@@ -116,9 +126,8 @@ export default function CardFrame({
         console.error(error);
       }
     };
-
     deleteAll();
-  }, [deleteSignal]);
+  }, [deleteSignal, cardList]);
 
   return (
     <Container>
@@ -147,11 +156,16 @@ export default function CardFrame({
                 showMenu={showMenu}
                 showAnswerForm={showAnswerForm}
                 onDelete={handleDelete}
+                profile={profile}
               />
             ))}
           </CardList>
 
-          {hasMore && <Observer ref={observerRef}>{loading ? "불러오는 중..." : ""}</Observer>}
+          {hasMore && (
+            <Observer ref={observerRef}>
+              {loading ? '불러오는 중...' : ''}
+            </Observer>
+          )}
         </>
       )}
     </Container>

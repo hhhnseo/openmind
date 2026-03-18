@@ -10,6 +10,7 @@ import patchAnswer from '../../apis/answers/patchAnswer';
 
 export default function FeedCard({
   data,
+  profile, //프로필 데이터 추가 (테스트)
   showMenu = true,
   showAnswerForm = true,
   onDelete,
@@ -128,11 +129,16 @@ export default function FeedCard({
       </Question>
 
       <Form>
-        <Profile src={ProfileImg} alt="프로필 이미지" />
-
+        { /* <Profile src={ProfileImg} alt="프로필 이미지" />
+        하단 테스트로 인해 잠시 주석 처리*/}
+        <Profile
+          src={profile?.imageSource || ProfileImg} // 이미지 불러오고, 없으면 기본 이미지
+          alt="프로필 이미지"/>
         <Content>
           <UserInfo>
-            <Nickname>{data.author || '아초는 고양이'}</Nickname>
+            { /* <Nickname>{data.author || '아초는 고양이'}</Nickname>
+            하단 테스트로 인해 잠시 주석 처리 */}
+            <Nickname >{profile?.name || data.author || '아초는 고양이'}</Nickname>
             <CreatedDateText>{formatDate(data.createdAt)}</CreatedDateText>
           </UserInfo>
 

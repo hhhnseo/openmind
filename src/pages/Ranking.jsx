@@ -24,9 +24,11 @@ function Ranking() {
     //질문 순위
     const getList = async () => {
       setLoading(true);
-      const response = await getAllSubjects({ limit: 50, offset: 0 });
-      const idList = response.results.map((item) => item.id);
-      const requests = idList.map((id) => getQuestion(id));
+      const response = await getAllSubjects({ limit: 1000 });
+      const topSubjects = response.results
+        .sort((a, b) => b.questionCount - a.questionCount)
+        .slice(0, 10);
+      const requests = topSubjects.map((item) => getQuestion(item.id));
       const responses = await Promise.all(requests);
       const allQuestions = responses.flatMap((res) => res.results);
       setBestList(allQuestions);
@@ -44,6 +46,7 @@ function Ranking() {
     .sort((a, b) => b.like - b.dislike - (a.like - a.dislike))
     .slice(0, 3);
 
+  console.log(bestList);
   return (
     <Container>
       <Header>
@@ -79,7 +82,7 @@ function Ranking() {
             ) : (
               listSort.map((item, ranking) => (
                 <QuestionList key={item.id}>
-                  <Link to={`/post/${item.id}/answer`}>
+                  <Link to={`/post/${item.subjectId}`}>
                     <div>
                       <ItemNum>
                         <span>👍 BEST {ranking + 1}</span>
@@ -88,8 +91,8 @@ function Ranking() {
                     </div>
                     <Count>
                       <LikeButton
-                        likeCounts={item.like}
-                        dislikeCounts={item.dislike}
+                        initialLike={item.like}
+                        initialDislike={item.dislike}
                       />
                     </Count>
                   </Link>
@@ -113,6 +116,7 @@ const Container = styled.div`
 
   @media only screen and (max-width: 1200px) {
     width: 100%;
+    max-width: initial;
     padding: 0 32px 40px;
   }
 
@@ -148,7 +152,7 @@ const BestUser = styled.div`
   display: flex;
   gap: 20px;
 
-  @media only screen and (max-width: 375px) {
+  @media only screen and (max-width: 768px) {
     flex-direction: column;
   }
 `;
@@ -202,6 +206,9 @@ const QuestionList = styled.div`
   box-shadow: var(--shadow-1pt);
   padding: 20px;
   border-radius: 16px;
+  &:hover {
+    box-shadow: var(--shadow-2pt);
+  }
 `;
 
 const ItemNum = styled.div`
@@ -211,19 +218,14 @@ const ItemNum = styled.div`
   display: flex;
   justify-content: space-between;
   }
+  
 `;
 
 const ItemContent = styled.div`
   margin-top: 8px;
   font-size: 18px;
   line-height: 24px;
-  // text-overflow: ellipsis;
-  // overflow: hidden;
-  // display: -webkit-box;
-  // -webkit-box-orient: vertical;
-  // -webkit-line-clamp: 3;
   &:hover {
-    text-decoration: underline;
     cursor: pointer;
   }
 `;

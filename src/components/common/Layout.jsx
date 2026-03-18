@@ -1,34 +1,64 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import heroImg from '../../assets/images/image-hero.svg';
 import Logo from '../common/Logo';
 import profileImg from '../../assets/images/image-profile.svg';
+import ShareButton from '../profile/ShareButton';
+import QuestionButton from '../questionbutton/QuestionButton';
 
-const Layout = ({ children }) => {
+const Layout = ({ children, profile, handleOpenModal }) => {
   const navigate = useNavigate();
+
+  const { id } = useParams();
+  const location = useLocation();
+
+  const isAnswerPage = location.pathname.endsWith('/answer');
 
   return (
     <Final>
       <BannerSection>
         <HeroImg src={heroImg} alt="배너 배경" />
         <ProfileOverlay>
-          <button onClick={() => navigate('/')}>
+          <button
+            onClick={() => {
+              const subjectId = localStorage.getItem('subjectId');
+
+              if (subjectId) {
+                navigate('/list');
+              } else {
+                navigate('/');
+              }
+            }}
+          >
             <Logo size="small" />
           </button>
-          <ProfileImage src={profileImg} alt="프로필 이미지" />
-          <Username>아초는고양이</Username>
+          <ProfileImage
+            src={profile?.imageSource || profileImg}
+            alt="프로필 이미지"
+            onClick={() => {
+              if (!id) return;
+              const target = `/post/${id}`;
+
+              if (location.pathname !== target) {
+                navigate(target);
+              }
+            }}
+          />
+
+          <Username>{profile?.name || '사용자'}</Username>
           <SNSContainer>
-            <Img src={profileImg} />
-            <Img src={profileImg} />
-            <Img src={profileImg} />
+            <ShareButton />
           </SNSContainer>
         </ProfileOverlay>
       </BannerSection>
       <MainContent>
-        <QuestionContainer>
-          {children}
-        </QuestionContainer>
+        <QuestionContainer>{children}</QuestionContainer>
       </MainContent>
+      {!isAnswerPage && (
+        <>
+          <QuestionButton handleOpenModal={handleOpenModal} />
+        </>
+      )}
     </Final>
   );
 };
@@ -73,6 +103,12 @@ const ProfileImage = styled.img`
   width: 136px;
   height: 136px;
   border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 const Username = styled.h1`
@@ -86,7 +122,6 @@ const SNSContainer = styled.div`
   gap: 8px;
 `;
 
-//sns 임시
 const Img = styled.img`
   width: 40px;
   height: 40px;
