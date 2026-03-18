@@ -2,9 +2,13 @@ import Layout from '../components/common/Layout';
 import CardFrame from '../components/common/CardFrame';
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getSubject } from '../apis/subjects/getSubject';
 
 export default function Answer() {
+  const { id } = useParams();
+  const [profile, setProfile] = useState(null);
+
   const [deleteSignal, setDeleteSignal] = useState(0);
   const [questionCount, setQuestionCount] = useState(0);
   const navigate = useNavigate();
@@ -18,7 +22,6 @@ export default function Answer() {
     }
   }, [navigate]);
 
-
   const handleDeleteAll = () => {
     const confirmed = window.confirm('삭제하시겠습니까?');
     if (confirmed) {
@@ -26,10 +29,9 @@ export default function Answer() {
     }
   };
 
- // post id 기준으로 바로 프로필 가져오기
   useEffect(() => {
-      if (!id) return;
-      const fetchProfile = async () => {
+    if (!id) return;
+    const fetchProfile = async () => {
       try {
         const data = await getSubject(id);
         setProfile(data);
@@ -42,13 +44,10 @@ export default function Answer() {
   }, [id]);
 
   return (
-    <Layout>
-
+    <Layout profile={profile}>
       <AnswerContainer>
         {questionCount > 0 && (
-          <DeleteButton onClick={handleDeleteAll}>
-            삭제하기
-          </DeleteButton>
+          <DeleteButton onClick={handleDeleteAll}>삭제하기</DeleteButton>
         )}
       </AnswerContainer>
 
