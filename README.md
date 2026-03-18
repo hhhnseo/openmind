@@ -20,15 +20,15 @@
     <td align="center"><strong>질문목록 페이지</strong></td>
    </tr>
    <tr>
-    <td><img src="https://github.com/user-attachments/assets/4e11e8a1-d797-4a7e-945e-625a65109dd9" alt=""></td>
-    <td><img src="https://github.com/user-attachments/assets/b8515982-5685-48c3-9c94-63934d1201f2" alt=""></td>
+    <td><img src="https://github.com/user-attachments/assets/4dad8b53-6005-49ad-9ba2-f6d7e44a2cd7" alt=""></td>
+    <td><img src="https://github.com/user-attachments/assets/e8ddb7a0-fdc7-422e-8260-8d65c66b4391" alt=""></td>
    </tr>
    <tr>
         <td align="center"><strong>개별피드 페이지</strong></td>
      <td align="center"><strong>답변하기 페이지</strong></td>
    </tr>
    <tr>
-        <td><img src="https://github.com/user-attachments/assets/01ad12f3-a96d-4d34-be04-1bfcdbc6d51d" alt=""></td>
+        <td><img src="https://github.com/user-attachments/assets/042d7940-7fce-4b40-a198-8908b56f26cd" alt=""></td>
     <td><img src="https://github.com/user-attachments/assets/cf90c3b4-e04c-4850-9148-619f7987215c" alt=""></td>
    </tr>
      <tr>
@@ -221,7 +221,7 @@
   </li>
   <li><b>기능</b>
     <ul>
-      <li></li>
+      <li>localStorage / 챗봇</li>
     </ul>
   </li>
 </ul><br>
@@ -285,7 +285,8 @@
    - 처음 생성 이름 → Id 생성 후 답변 페이지로 이동
    - 기존 저장 이름 → Id 중복 체크 후 기존 Id 답변 페이지로 이동
 
-![화면기록_챗봇_pc](https://github.com/user-attachments/assets/4e11e8a1-d797-4a7e-945e-625a65109dd9)
+![메인_챗봇](https://github.com/user-attachments/assets/4dad8b53-6005-49ad-9ba2-f6d7e44a2cd7)
+
 
 
 <br>
@@ -302,7 +303,8 @@
 - 로딩 및 에러 처리
   - 로딩, 에러 컴포넌트 적용으로 사용자 경험 개선
  
-![화면기록_질문목록_v3](https://github.com/user-attachments/assets/b8515982-5685-48c3-9c94-63934d1201f2)
+
+![질문목록_v2](https://github.com/user-attachments/assets/e8ddb7a0-fdc7-422e-8260-8d65c66b4391)
 
 
 
@@ -330,7 +332,10 @@
   - 버튼 클릭 시 모달 창 노출
   - 사용자 입력을 통한 질문 작성 및 전송 기능 구현
 
-<img width="758" height="523" alt="개별피드 모달" src="https://github.com/user-attachments/assets/01ad12f3-a96d-4d34-be04-1bfcdbc6d51d" />
+
+![개별피드_2](https://github.com/user-attachments/assets/042d7940-7fce-4b40-a198-8908b56f26cd)
+
+
 
 
 <br>
@@ -348,6 +353,7 @@
     - 답변 없음 : “수정하기” 미노출
 
 ![화면기록_답변하기_pc](https://github.com/user-attachments/assets/cf90c3b4-e04c-4850-9148-619f7987215c)
+
 
 
 <br>
