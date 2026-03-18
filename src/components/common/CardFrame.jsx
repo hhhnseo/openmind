@@ -13,6 +13,7 @@ export default function CardFrame({
   showAnswerForm = false,
   deleteSignal,
   refreshSignal,
+  setQuestionCount,
 }) {
   const [cardList, setCardList] = useState([]);
   const [offset, setOffset] = useState(0);
@@ -77,6 +78,12 @@ export default function CardFrame({
     handleRefresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshSignal, subjectID]);
+
+  useEffect(() => {
+    if (setQuestionCount) {
+      setQuestionCount(totalCount);
+    }
+  }, [totalCount, setQuestionCount]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
