@@ -16,7 +16,7 @@
  <tr>
   <tbody>
    <tr>
-    <td align="center"><strong>메인 페이지 (챗봇)</strong></td>
+    <td align="center"><strong>메인 페이지 (+챗봇)</strong></td>
     <td align="center"><strong>질문목록 페이지</strong></td>
    </tr>
    <tr>
@@ -24,20 +24,20 @@
     <td><img src="https://github.com/user-attachments/assets/b8515982-5685-48c3-9c94-63934d1201f2" alt=""></td>
    </tr>
    <tr>
-    <td align="center"><strong>링킹 페이지</strong></td>
-    <td align="center"><strong>개별피드 페이지</strong></td>
+        <td align="center"><strong>개별피드 페이지</strong></td>
+     <td align="center"><strong>답변하기 페이지</strong></td>
    </tr>
    <tr>
-    <td><img src="https://github.com/user-attachments/assets/fc07894c-cd21-42e0-93d0-a93c1c2bd2ab" alt=""></td>
-    <td><img src="https://github.com/user-attachments/assets/fc07894c-cd21-42e0-93d0-a93c1c2bd2ab" alt=""></td>
+        <td><img src="https://github.com/user-attachments/assets/01ad12f3-a96d-4d34-be04-1bfcdbc6d51d" alt=""></td>
+    <td><img src="https://github.com/user-attachments/assets/cf90c3b4-e04c-4850-9148-619f7987215c" alt=""></td>
    </tr>
      <tr>
-    <td align="center"><strong>답변하기 페이지</strong></td>
+       <td align="center"><strong>링킹 페이지</strong></td>
     <td align="center"><strong>404 페이지</strong></td>
    </tr>
    <tr>
-    <td></td>
-    <td></td>
+      <td><img src="https://github.com/user-attachments/assets/fc07894c-cd21-42e0-93d0-a93c1c2bd2ab" alt=""></td>
+    <td><img src="https://github.com/user-attachments/assets/70b37d53-ab80-47bf-bafd-f59d2906a5d3" alt=""></td>
    </tr>
   </tbody>
  </tr>
@@ -275,7 +275,7 @@
 
 ## 📌 페이지별 기능
 
-### [인트로 페이지]
+### [메인 페이지]
 
 - 챗봇 기능 구현
   - **Openai API**를 연동하여 실시간 챗봇 구현
@@ -313,7 +313,7 @@
   - 받은 질문의 수가 높은 순서대로 배열
   - 순위를 정하고 스타일 컴포넌트를 통해 금. 은. 동 메달 아이콘을 적용
 - 인기 질문 순위 불러오기
-  - 모든 id의 질문 데이터를 가져와서 좋아요 수에서싫어요 값을 뺀 후 좋아요가 높은 순서대로 배열
+  - 모든 id의 질문 데이터를 가져와서 좋아요 수에서 싫어요 값을 뺀 후 좋아요가 높은 순서대로 배열
   - 최상위 3개의 데이터까지만 표시
 - 질문 클릭 시 해당 유저의 답변 페이지로 이동
   - 선택한 질문을 클릭하면 해당 유저의 /post/{id}/answer 페이지로 이동
@@ -323,6 +323,14 @@
 <br>
 
 ### [개별피드 페이지]
+- URL 복사 및 SNS 공유 기능 구현
+  - 현재 페이지 URL을 복사하여 공유 가능하도록 구현
+  - 카카오 JavaScript SDK를 연동하여 현재 페이지를 카카오톡으로 공유할 수 있도록 구현
+- 질문 작성 모달 기능 구현
+  - 버튼 클릭 시 모달 창 노출
+  - 사용자 입력을 통한 질문 작성 및 전송 기능 구현
+
+<img width="758" height="523" alt="개별피드 모달" src="https://github.com/user-attachments/assets/01ad12f3-a96d-4d34-be04-1bfcdbc6d51d" />
 
 
 <br>
@@ -338,6 +346,8 @@
   - 답변 상태에 따라 메뉴 옵션을 다르게 표시
     - 답변 거절 상태 : “수정하기” 미노출
     - 답변 없음 : “수정하기” 미노출
+
+![화면기록_답변하기_pc](https://github.com/user-attachments/assets/cf90c3b4-e04c-4850-9148-619f7987215c)
 
 
 <br>
