@@ -9,7 +9,6 @@ const Modal = ({ isOpen, onClose, profile, subjectId, onSuccess }) => {
   if (!isOpen) {
     return null;
   }
-  console.log('모달이 받은 subjectId:', subjectId);
 
   const handlePost = async (content) => {
     try {

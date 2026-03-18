@@ -8,8 +8,8 @@ import Modal from '../components/common/Modal';
 export default function Post() {
   const { id } = useParams();
   const [profile, setProfile] = useState(null);
-  const [isModalOpen, setModalOpen] = useState(false); // 모달 상태 추가
-  const [refreshSignal, setRefreshSignal] = useState(false); // 새로고침 신호
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [refreshSignal, setRefreshSignal] = useState(false);
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
@@ -17,7 +17,6 @@ export default function Post() {
   const handleQuestionSuccess = () => {
     setRefreshSignal((prev) => !prev);
   };
-  // id 기준으로 프로필 호출
   useEffect(() => {
     const fetchProfile = async () => {
       if (!id) return;
@@ -33,12 +32,10 @@ export default function Post() {
     fetchProfile();
   }, [id]);
 
-  console.log('Post 페이지에서 파악한 ID:', id);
-
   return (
     <Layout profile={profile} handleOpenModal={handleOpenModal}>
       <CardFrame
-        profile={profile} //테스트
+        profile={profile}
         subjectID={id}
         showMenu={false}
         showAnswerForm={false}
@@ -48,8 +45,8 @@ export default function Post() {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         subjectId={id}
-        profile={profile} // 모달에 프로필 정보 전달 (MOCK 대체용)
-        onSuccess={handleQuestionSuccess} // 성공 콜백 전달
+        profile={profile}
+        onSuccess={handleQuestionSuccess}
       />
     </Layout>
   );
