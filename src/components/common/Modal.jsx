@@ -3,11 +3,22 @@ import styled from 'styled-components';
 import closeIcon from '../../assets/icons/icon-close.svg';
 import messagesIcon from '../../assets/icons/icon-messages.svg';
 import AnswerForm from '../answer/AnswerForm';
+import postQuestion from '../../apis/questions/postQuestion';
 
-const Modal = ({ isOpen, onClose }) => {
+const Modal = ({ isOpen, onClose, profile, subjectId, onSuccess }) => {
   if (!isOpen) {
     return null;
   }
+
+  const handlePost = async (content) => {
+    try {
+      await postQuestion(subjectId, content);
+      onSuccess();
+      onClose();
+    } catch (error) {
+      console.error('상세 에러 내용:', error);
+    }
+  };
 
   return createPortal(
     <Wrapper onClick={onClose}>
@@ -24,11 +35,11 @@ const Modal = ({ isOpen, onClose }) => {
           </Top>
           <UserContainer>
             To.
-            <Image src={MOCK.imageSource} alt="프로필 이미지" />
-            <Name>{MOCK.name}</Name>
+            <Image src={profile?.imageSource} alt="프로필 이미지" />
+            <Name>{profile?.name}</Name>
           </UserContainer>
         </MiddleContainer>
-        <AnswerForm type="question" />
+        <AnswerForm type="question" onSubmit={handlePost} />
       </FinalContainer>
     </Wrapper>,
 
@@ -37,15 +48,6 @@ const Modal = ({ isOpen, onClose }) => {
 };
 
 export default Modal;
-
-const MOCK = {
-  id: 13402,
-  name: '바이바이바이',
-  imageSource:
-    'https://fastly.picsum.photos/id/432/200/200.jpg?hmac=b4-kxXh_oTpvCBH9hueJurvHDdhy0eYNNba-mO9Q8bU',
-  questionCount: 1,
-  createdAt: '2026-03-11T06:08:11.307400Z',
-};
 
 const Wrapper = styled.div`
   display: flex;
